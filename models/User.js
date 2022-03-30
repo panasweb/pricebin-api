@@ -24,6 +24,36 @@ const UserSchema = new Schema({
     points: {
         type: Number,
         default: 0,
+    },
+    UserLog: {
+        monthlyAverage: {
+            type: Number,
+            default: 0,
+        },
+        weeklyAverage: {
+            type: Number,
+            default: 0,
+        },
+        listAverage: {
+            type: Number,
+            default: 0,
+        },
+        nMonths: {
+            type: Number,
+            default: 1,
+        },
+        nWeeks: {
+            type: Number,
+            default: 1,
+        },
+        start: {
+            type: Date,
+            default: Date.now()
+        },
+        globalTotal: {
+            type: Number,
+            default: 0
+        }
     }
 })
 

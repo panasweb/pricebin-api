@@ -6,6 +6,11 @@ const StoreSchema = new Schema({
         type: String,
         required: true,
     },
+    location: {
+        type: [Number],
+        default: undefined,
+        validate: [locationLength, '{PATH} should have exactly 2 values']
+    },
     branch: {
         type: String,
         required: false
@@ -13,17 +18,15 @@ const StoreSchema = new Schema({
     logo: {
         type: String,
         required: false
-    },
-    lat: {
-        type: Number,
-        required: false
-    },
-    lon: {
-        type: Number,
-        required: false
-    },
+    }
     // rating: {
     //     type: Number,
     //     required: false,
     // }
 })
+
+function locationLength(val) {
+    return val.length === 2;
+}
+
+module.exports = mongoose.model("Store", StoreSchema);

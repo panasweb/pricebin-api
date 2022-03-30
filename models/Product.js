@@ -1,5 +1,7 @@
+import {TYPES} from '../constants'
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+
 
 const PriceSchema = new Schema({
     amount: {
@@ -9,16 +11,20 @@ const PriceSchema = new Schema({
     date: {
         type: Date, default: Date.now()
     },
+    currency: {
+        type: String,
+        maxlength: 3,  // ISO 4217
+        trim: true,
+    },
     store: {
+        type:String,
+        required:true,
+    },
+    StoreKey: {
         type: Schema.Types.ObjectId, 
         ref: "Store", 
         required: true,
-    },
-    currency: {
-        type: String,
-        maxlength: 3,
-        trim: true,
-    },
+    }
 
 })
 
@@ -37,12 +43,13 @@ const ProductSchema = new Schema({
         type: String,
         required: true,
         default: null,
-    },
-    img: {
-        type: String
+        enum: TYPES,
     },
     prices: {
         type: [PriceSchema]
+    },
+    img: {
+        type: String
     }
 })
 
