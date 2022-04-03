@@ -1,4 +1,4 @@
-export const TYPES = [
+exports.TYPES = [
     'Despensa',
     'Electrónicos',
     'Baño y Limpieza',

@@ -1,4 +1,4 @@
-import {TYPES} from '../constants'
+const TYPES = require('../constants').TYPES
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -55,3 +55,32 @@ const ProductSchema = new Schema({
 
 
 module.exports = mongoose.model("Product", ProductSchema);
+
+/*
+
+{
+    "name":,
+    "brand":,
+    "type":,
+    "prices": [
+        {
+            "amount":,
+            "date":,
+            "currency":,
+            "type":,
+            "store":"Walmart",
+            "StoreKey":"6244c57c634acd7618dd45f7"
+        },
+        {
+            "amount":,
+            "date":,
+            "currency":,
+            "type":,
+            "store":"Superama",
+            "StoreKey":""
+        }
+    ],
+    "img":
+}
+
+*/

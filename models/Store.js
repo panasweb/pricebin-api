@@ -13,16 +13,13 @@ const StoreSchema = new Schema({
     },
     branch: {
         type: String,
-        required: false
+        required: false,
+        default: undefined,
     },
     logo: {
         type: String,
         required: false
     }
-    // rating: {
-    //     type: Number,
-    //     required: false,
-    // }
 })
 
 function locationLength(val) {
