@@ -1,0 +1,4 @@
+Prices are an array of documents nested in Product document.
+How do you go about querying prices by id?
+
+https://www.mongodb.com/community/forums/t/finding-an-item-in-a-nested-object-of-objects/13229

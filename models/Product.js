@@ -34,6 +34,7 @@ const ProductSchema = new Schema({
         type: String,
         minlength: 1,
         maxlength:140,
+        required: true,
     },
     brand: {
         type: String,
@@ -41,12 +42,12 @@ const ProductSchema = new Schema({
     },
     type: {
         type: String,
-        required: true,
         default: null,
         enum: TYPES,
     },
     prices: {
-        type: [PriceSchema]
+        type: [PriceSchema],
+        default: undefined,
     },
     img: {
         type: String
@@ -55,32 +56,3 @@ const ProductSchema = new Schema({
 
 
 module.exports = mongoose.model("Product", ProductSchema);
-
-/*
-
-{
-    "name":,
-    "brand":,
-    "type":,
-    "prices": [
-        {
-            "amount":,
-            "date":,
-            "currency":,
-            "type":,
-            "store":"Walmart",
-            "StoreKey":"6244c57c634acd7618dd45f7"
-        },
-        {
-            "amount":,
-            "date":,
-            "currency":,
-            "type":,
-            "store":"Superama",
-            "StoreKey":""
-        }
-    ],
-    "img":
-}
-
-*/

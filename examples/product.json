@@ -1,0 +1,22 @@
+{
+    "name":"BioMSK Toallitas Húmedas (50pz)",
+    "brand":"BioMSK",
+    "type":"Baño y Limpieza",
+    "prices": [
+        {
+            "amount":51,
+            "date":"2022-04-03",
+            "currency":"MXN",
+            "store":"Walmart",
+            "StoreKey":"6244c57c634acd7618dd45f7"
+        },
+        {
+            "amount":48,
+            "date":"2022-03-01",
+            "currency":"MXN",
+            "store":"Superama",
+            "StoreKey":"6249fd821db2f575fbc3fc5d"
+        }
+    ],
+    "img":"https://biomsk.com/wp-content/uploads/2021/07/toallitas.png"
+}

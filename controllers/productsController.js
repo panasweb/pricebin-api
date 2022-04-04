@@ -49,3 +49,31 @@ exports.create = function (req, res) {
     )
 }
 
+exports.updatePrice = async function(req, res) {
+  // Receive product ID, price ID, new amount
+  const {productId, priceId, newAmount} = req.body;
+  console.log("UPDATE Price", newAmount)
+  
+  Product.findOneAndUpdate(
+    { "_id": productId, "prices._id": priceId },
+    { 
+        "$set": {
+            "prices.$.amount": newAmount
+        }
+    })
+    .then(result => {
+      res.send(result);
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    })
+}
+/*
+Example request to updatePrice
+{
+  "productId":"624a298c8e3e8109ab1754b1",
+  "priceId":"624a298c8e3e8109ab1754b2",
+  "newAmount": 150
+}
+*/
+
