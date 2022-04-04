@@ -25,7 +25,6 @@ const PriceSchema = new Schema({
         ref: "Store", 
         required: true,
     }
-
 })
 
 
@@ -47,7 +46,7 @@ const ProductSchema = new Schema({
     },
     prices: {
         type: [PriceSchema],
-        default: undefined,
+        default: [],
     },
     img: {
         type: String

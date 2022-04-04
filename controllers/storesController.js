@@ -31,7 +31,9 @@ exports.delete = function (req, res) {
 exports.findStoreByName = function (req, res) {
   const {name} = req.body;
   console.log("FIND store by name", req.body);
-  Store.findOne({name:name})
+  let nameRe = new RegExp(name, 'i');  // case insensitive
+
+  Store.findOne({name: nameRe})
   .then(store => res.send(store))
   .catch(err => res.status(500).send("Error:" + err));
 }

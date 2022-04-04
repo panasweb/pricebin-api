@@ -1,7 +1,6 @@
 
 const Product = require('../models/Product');
 
-
 exports.getAll = function (req, res) {
   console.log("Fetch all products");
   Product.find()
@@ -49,7 +48,33 @@ exports.create = function (req, res) {
     )
 }
 
-exports.updatePrice = async function(req, res) {
+/* PRODUCT-PRICE CRUD */
+
+exports.addPrice = async function(req, res) {
+  const {productId, price} = req.body;
+  try {
+    const product = await Product.findById(productId);
+    console.log("Add price to product:");
+    console.log(product);
+
+    product.prices.push(price);
+
+    product.save()
+    .then(result => {
+      res.send(result);
+    })
+    .catch(err => {
+      console.error("Error adding price:", err);
+      res.status(500).send(err);
+    })
+
+  } catch (error) {
+    console.error("Error finding product with id", productId);
+    res.status(500).send(error);
+  }
+}
+
+exports.updatePrice = function(req, res) {
   // Receive product ID, price ID, new amount
   const {productId, priceId, newAmount} = req.body;
   console.log("UPDATE Price", newAmount)
