@@ -1,0 +1,27 @@
+{
+    "total": 100,
+    "UserKey": "624dc99f16aa8ccb112817ac",
+    "list": [
+        {
+            "productName": "Producto 1",
+            "brandName": "Marca 1",
+            "storeName": "Tienda A",
+            "amount": 12,
+            "quantity":3
+        },
+        {
+            "productName": "Producto 2",
+            "brandName": "Marca 2",
+            "storeName": "Tienda A",
+            "amount": 31.0,
+            "quantity":1
+        },
+        {
+            "productName": "Producto 3",
+            "brandName": "Marca 3",
+            "storeName": "Tienda A",
+            "amount": 16.5,
+            "quantity":2
+        }
+    ]
+}

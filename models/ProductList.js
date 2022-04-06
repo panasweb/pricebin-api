@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const ListRecordSchema = {
+const ListRecord = {
     productName: {
         type: String,
         required: true,
@@ -25,7 +25,7 @@ const ListRecordSchema = {
 }
 
 const ProductListSchema = new Schema({
-    list: [ListRecordSchema],
+    list: [ListRecord], // not a schema, so no Object Id
     date: {
         type: Date,
         default: Date.now()
