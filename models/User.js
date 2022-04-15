@@ -26,6 +26,10 @@ const UserSchema = new Schema({
         default: 0,
     },
     UserLog: {
+        nLists: {
+            type:Number,
+            default:0,
+        },
         monthlyAverage: {
             type: Number,
             default: 0,

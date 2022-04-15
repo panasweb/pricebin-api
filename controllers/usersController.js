@@ -62,11 +62,3 @@ exports.create = function (req, res) {
       (err) => res.status(500).send("Server Error:" + err)
     )
 }
-
-
-/**
- * List operations
- * - On Add,Delete: update total, update averages
- * - restart date and update averages
- * 
- */
