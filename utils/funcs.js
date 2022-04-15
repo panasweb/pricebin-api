@@ -29,8 +29,8 @@ exports.recalculateWeeks = function(startDate) {
     const start = startDate.getTime();
 
     const diff = Math.abs(today - start);
-    
-    return Math.max(Math.floow(diff, WEEK_MILISECONDS), 1);
+    let weeks = Math.max(Math.floor(diff / WEEK_MILISECONDS), 1);
+    return weeks;
 }
 
 exports.recalculateMonths = function(startDate) {
@@ -39,4 +39,8 @@ exports.recalculateMonths = function(startDate) {
     const monthsBegin = startDate.getFullYear() * 12 + startDate.getMonth();
 
     return Math.max(monthsToday - monthsBegin, 1);
+}
+
+exports.roundTwoDecimals = function(num) {
+    return Math.round(num * 100) / 100
 }

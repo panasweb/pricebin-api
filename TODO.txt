@@ -1,1 +1,2 @@
-1. Implement Update Price of Product (by ObjectId)
+1. TEST Update Price of Product (by ObjectId)
+2. TEST and DEBUG weekly average of userLog
