@@ -1,0 +1,600 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "PriceBin API",
+    "description": "API desarrollada por el equipo de <b>panasweb</b>. Documentación generada con Swagger.js"
+  },
+  "host": "localhost:3010",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "User",
+      "description": "Endpoints"
+    },
+    {
+      "name": "ProductList",
+      "description": "Endpoints"
+    },
+    {
+      "name": "Store",
+      "description": "Endpoints"
+    },
+    {
+      "name": "Product",
+      "description": "Endpoints"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/users/": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/delete/{id}": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Borrar un usuario por ObjectId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Obtener un usuario por ObjectId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/stores/": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/stores/delete/{id}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/stores/by-name": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/stores/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/lists/": {
+      "post": {
+        "tags": [
+          "ProductList"
+        ],
+        "description": "Crear una lista de producto a nombre de ObjectId de usuario y actualizar sus estadísticas",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "list": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "UserKey": {
+                  "example": "any"
+                },
+                "total": {
+                  "example": "any"
+                },
+                "skipUpdate": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "ProductList"
+        ],
+        "description": "Obtener las listas de productos de todos los usuarios",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/lists/delete/{id}": {
+      "post": {
+        "tags": [
+          "ProductList"
+        ],
+        "description": "Borrar una lista de productos por ObjectId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/lists/of/{userId}": {
+      "get": {
+        "tags": [
+          "ProductList"
+        ],
+        "description": "Obtener las listas de productos de un usuario por ObjectId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/lists/{id}": {
+      "get": {
+        "tags": [
+          "ProductList"
+        ],
+        "description": "Obtener una lista de producto por ObjectId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Registrar un nuevo producto con o sin lista de precios",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "brand": {
+                  "example": "any"
+                },
+                "type": {
+                  "example": "any"
+                },
+                "img": {
+                  "example": "any"
+                },
+                "prices": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Obtener todos los productos enlistados en Pricebin",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/update-price": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Actualizar el precio de un producto en una tienda, dado el nuevo monto y los ObjectId de producto y precio",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "example": "any"
+                },
+                "priceId": {
+                  "example": "any"
+                },
+                "newAmount": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/add-price": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Registrar un precio de un producto por ObjectId",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productId": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/delete/{id}": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Borrar un producto por ObjectId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Obtener un producto por ObjectId",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "6259bda3de3c1b216355cdd2"
+        },
+        "email": {
+          "type": "string",
+          "example": "example@gmail.com"
+        },
+        "username": {
+          "type": "string",
+          "example": "exampleguy123"
+        },
+        "rank": {
+          "type": "number",
+          "example": 1
+        },
+        "points": {
+          "type": "number",
+          "example": 1180
+        },
+        "UserLog": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "example": "2022-04-15T22:53:47.244Z"
+            },
+            "nLists": {
+              "type": "number",
+              "example": 4
+            },
+            "monthlyAverage": {
+              "type": "number",
+              "example": 500
+            },
+            "weeklyAverage": {
+              "type": "number",
+              "example": 500
+            },
+            "listAverage": {
+              "type": "number",
+              "example": 125
+            },
+            "nMonths": {
+              "type": "number",
+              "example": 1
+            },
+            "nWeeks": {
+              "type": "number",
+              "example": 1
+            },
+            "globalTotal": {
+              "type": "number",
+              "example": 500
+            }
+          }
+        }
+      }
+    },
+    "CreateUser": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "example@gmail.com"
+        },
+        "username": {
+          "type": "string",
+          "example": "exampleguy123"
+        }
+      },
+      "required": [
+        "email"
+      ]
+    },
+    "UpdatePrice": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string",
+          "example": "624a298c8e3e8109ab1754b1"
+        },
+        "priceId": {
+          "type": "string",
+          "example": "624a298c8e3e8109ab1754b2"
+        },
+        "newAmount": {
+          "type": "number",
+          "example": 150
+        }
+      },
+      "required": [
+        "productId",
+        "priceId",
+        "newAmount"
+      ]
+    }
+  }
+}

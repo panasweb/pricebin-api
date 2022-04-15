@@ -14,6 +14,10 @@ const {
 const db = require('../db/db')
 
 exports.getAll = function (req, res) {
+  /**
+   * #swagger.tags = ['ProductList']
+   * #swagger.description = 'Obtener las listas de productos de todos los usuarios'
+   */
   console.log("FETCH all lists");
   ProductList.find()
     .then((lists) => res.status(200).send(lists))
@@ -21,6 +25,10 @@ exports.getAll = function (req, res) {
 };
 
 exports.getOne = function (req, res) {
+  /**
+   * #swagger.tags = ['ProductList']
+   * #swagger.description = 'Obtener una lista de producto por ObjectId'
+   */
   console.log("FETCH ProductList by Id: ", req.params.id);
 
   ProductList.findById(req.params.id)
@@ -31,6 +39,10 @@ exports.getOne = function (req, res) {
 };
 
 exports.delete = function (req, res) {
+  /**
+   * #swagger.tags = ['ProductList']
+   * #swagger.description = 'Borrar una lista de productos por ObjectId'
+   */
   ProductList.findOneAndDelete({ _id: req.params.id })
     .then((deletedDoc) => {
       res.send("Deleted succesfully: " + deletedDoc);
@@ -42,6 +54,10 @@ exports.delete = function (req, res) {
 
 
 exports.create = async (req, res) => {
+  /**
+   * #swagger.tags = ['ProductList']
+   * #swagger.description = 'Crear una lista de producto a nombre de ObjectId de usuario y actualizar sus estadísticas'
+   */
   const {list, date, UserKey} = req.body;
 
   console.log("CREATE List for user with id", UserKey);
@@ -107,6 +123,10 @@ exports.create = async (req, res) => {
 
 
 exports.getListsOfUser = function(req, res) {
+  /**
+   * #swagger.tags = ['ProductList']
+   * #swagger.description = 'Obtener las listas de productos de un usuario por ObjectId'
+   */
   const {userId} = req.params;
   // find all lists with UserKey = userId;
   ProductList.find({UserKey:userId}).sort({date: -1})  // newest to oldest
@@ -166,7 +186,7 @@ const updateUserLogStats = async (userInstance, listInstance, session) => {
 
 // ========= DEPRECATED
 
-exports.createDEPRECATED = async function(req, res) {
+const createDEPRECATED = async function(req, res) {
   const {list, date, UserKey} = req.body;
   let {total} = req.body;
 

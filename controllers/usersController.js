@@ -1,6 +1,10 @@
 const User = require('../models/User');
 
 exports.getAll = function (req, res) {
+  /**
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Obtener todos los usuarios en Pricebin'
+   */
   console.log("FETCH all users");
   User.find()
     .then((users) => res.status(200).send(users))
@@ -8,6 +12,10 @@ exports.getAll = function (req, res) {
 };
 
 exports.getOne = function (req, res) {
+  /**
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Obtener un usuario por ObjectId'
+   */
   console.log("FETCH User by Id: ", req.params.id);
 
   User.findById(req.params.id)
@@ -18,6 +26,10 @@ exports.getOne = function (req, res) {
 };
 
 exports.delete = function (req, res) {
+  /**
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Borrar un usuario por ObjectId'
+   */
   User.findOneAndDelete({ _id: req.params.id })
     .then((deletedDoc) => {
       res.send("Deleted succesfully: " + deletedDoc);
@@ -28,6 +40,10 @@ exports.delete = function (req, res) {
 };
 
 exports.findUserByUsername = function (req, res) {
+  /**
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Obtener un usuario por req.body.username'
+   */
   const { username } = req.body;
   console.log("FIND user by username", req.body);
 
@@ -37,6 +53,10 @@ exports.findUserByUsername = function (req, res) {
 }
 
 exports.findUserByEmail = function (req, res) {
+  /**
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Obtener un usuario por req.body.email'
+   */
   const { email } = req.body;
   console.log("FIND user by email", req.body);
 
@@ -46,6 +66,10 @@ exports.findUserByEmail = function (req, res) {
 }
 
 exports.create = function (req, res) {
+  /**
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Crear un usuario'
+   */
   console.log("CREATE User");
 
   const { username, email } = req.body;
