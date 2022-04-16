@@ -10,6 +10,7 @@ router.post("/", user.create);
 router.post("/delete/:id", user.delete);
 
 router.get("/by-username", user.findUserByUsername);
+
 router.get("/by-email", user.findUserByEmail);
 
 router.get("/:id", user.getOne);

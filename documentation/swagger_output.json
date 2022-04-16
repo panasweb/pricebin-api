@@ -45,7 +45,10 @@
     },
     "/users/": {
       "get": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "Obtener todos los usuarios en Pricebin",
         "parameters": [],
         "responses": {
           "200": {
@@ -91,6 +94,30 @@
         }
       }
     },
+    "/users/by-username": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users/by-email": {
+      "get": {
+        "tags": [],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/users/{id}": {
       "get": {
         "tags": [
@@ -117,6 +144,7 @@
     },
     "/stores/": {
       "post": {
+        "tags": [],
         "description": "",
         "parameters": [],
         "responses": {
@@ -126,7 +154,10 @@
         }
       },
       "get": {
-        "description": "",
+        "tags": [
+          "Store"
+        ],
+        "description": "Obtener la lista de todas las tiendas en Pricebin",
         "parameters": [],
         "responses": {
           "200": {
@@ -140,7 +171,10 @@
     },
     "/stores/delete/{id}": {
       "post": {
-        "description": "",
+        "tags": [
+          "Store"
+        ],
+        "description": "Borrar una tienda por ObjectId",
         "parameters": [
           {
             "name": "id",
@@ -161,6 +195,7 @@
     },
     "/stores/by-name": {
       "post": {
+        "tags": [],
         "description": "",
         "parameters": [],
         "responses": {
@@ -172,7 +207,10 @@
     },
     "/stores/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Store"
+        ],
+        "description": "Obtener una tienda por ObjectId",
         "parameters": [
           {
             "name": "id",

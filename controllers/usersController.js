@@ -42,7 +42,7 @@ exports.delete = function (req, res) {
 exports.findUserByUsername = function (req, res) {
   /**
    * #swagger.tags = ['User']
-   * #swagger.description = 'Obtener un usuario por req.body.username'
+   * #swagger.description = 'Obtener un usuario por su username'
    */
   const { username } = req.body;
   console.log("FIND user by username", req.body);
@@ -55,7 +55,7 @@ exports.findUserByUsername = function (req, res) {
 exports.findUserByEmail = function (req, res) {
   /**
    * #swagger.tags = ['User']
-   * #swagger.description = 'Obtener un usuario por req.body.email'
+   * #swagger.description = 'Obtener un usuario por su email'
    */
   const { email } = req.body;
   console.log("FIND user by email", req.body);
