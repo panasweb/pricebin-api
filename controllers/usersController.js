@@ -1,6 +1,10 @@
 const User = require('../models/User');
 
 exports.getAll = function (req, res) {
+  /*
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Obtener todos los usuarios en Pricebin'
+   */
   console.log("FETCH all users");
   User.find()
     .then((users) => res.status(200).send(users))
@@ -8,6 +12,10 @@ exports.getAll = function (req, res) {
 };
 
 exports.getOne = function (req, res) {
+  /*
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Obtener un usuario por ObjectId'
+   */
   console.log("FETCH User by Id: ", req.params.id);
 
   User.findById(req.params.id)
@@ -17,17 +25,10 @@ exports.getOne = function (req, res) {
     .catch((err) => res.status(500).send("Error: " + err));
 };
 
-exports.delete = function (req, res) {
-  User.findOneAndDelete({ _id: req.params.id })
-    .then((deletedDoc) => {
-      res.send("Deleted succesfully: " + deletedDoc);
-    })
-    .catch((err) => {
-      res.status(500).send("Error:" + err);
-    });
-};
-
 exports.findUserByUsername = function (req, res) {
+  // #swagger.tags = ['User']
+  // #swagger.description = 'Obtner un usuario por su username'
+
   const { username } = req.body;
   console.log("FIND user by username", req.body);
 
@@ -37,6 +38,8 @@ exports.findUserByUsername = function (req, res) {
 }
 
 exports.findUserByEmail = function (req, res) {
+  // #swagger.tags = ['User']
+  // #swagger.description = 'Obtner un usuario por su email'
   const { email } = req.body;
   console.log("FIND user by email", req.body);
 
@@ -46,13 +49,14 @@ exports.findUserByEmail = function (req, res) {
 }
 
 exports.create = function (req, res) {
-  console.log("CREATE User");
+  // #swagger.tags = ['User']
+  // #swagger.description = 'Crear un usuario'
 
   const { username, email } = req.body;
 
   const user = new User({
     username,
-    email  
+    email
   })
 
   user.save()
@@ -62,3 +66,19 @@ exports.create = function (req, res) {
       (err) => res.status(500).send("Server Error:" + err)
     )
 }
+
+exports.delete = function (req, res) {
+  /*
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Borrar un usuario por ObjectId'
+   */
+  User.findOneAndDelete({ _id: req.params.id })
+    .then((deletedDoc) => {
+      res.send("Deleted succesfully: " + deletedDoc);
+    })
+    .catch((err) => {
+      res.status(500).send("Error:" + err);
+    });
+};
+
+
