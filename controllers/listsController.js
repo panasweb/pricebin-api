@@ -14,7 +14,7 @@ const {
 const db = require('../db/db')
 
 exports.getAll = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['ProductList']
    * #swagger.description = 'Obtener las listas de productos de todos los usuarios'
    */
@@ -25,7 +25,7 @@ exports.getAll = function (req, res) {
 };
 
 exports.getOne = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['ProductList']
    * #swagger.description = 'Obtener una lista de producto por ObjectId'
    */
@@ -39,7 +39,7 @@ exports.getOne = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['ProductList']
    * #swagger.description = 'Borrar una lista de productos por ObjectId'
    */
@@ -54,7 +54,7 @@ exports.delete = function (req, res) {
 
 
 exports.create = async (req, res) => {
-  /**
+  /*
    * #swagger.tags = ['ProductList']
    * #swagger.description = 'Crear una lista de producto a nombre de ObjectId de usuario y actualizar sus estadísticas'
    */
@@ -123,7 +123,7 @@ exports.create = async (req, res) => {
 
 
 exports.getListsOfUser = function(req, res) {
-  /**
+  /*
    * #swagger.tags = ['ProductList']
    * #swagger.description = 'Obtener las listas de productos de un usuario por ObjectId'
    */
@@ -135,7 +135,7 @@ exports.getListsOfUser = function(req, res) {
 }
 
 
-/**
+/*
  * List operations
  * - On Add,Delete: update total, update averages
  * - restart date and update averages

@@ -1,7 +1,7 @@
 const User = require('../models/User');
 
 exports.getAll = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['User']
    * #swagger.description = 'Obtener todos los usuarios en Pricebin'
    */
@@ -12,7 +12,7 @@ exports.getAll = function (req, res) {
 };
 
 exports.getOne = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['User']
    * #swagger.description = 'Obtener un usuario por ObjectId'
    */
@@ -25,8 +25,50 @@ exports.getOne = function (req, res) {
     .catch((err) => res.status(500).send("Error: " + err));
 };
 
+exports.findUserByUsername = function (req, res) {
+  // #swagger.tags = ['User']
+  // #swagger.description = 'Obtner un usuario por su username'
+
+  const { username } = req.body;
+  console.log("FIND user by username", req.body);
+
+  User.findOne({ name: username })
+    .then(user => res.send(user))
+    .catch(err => res.status(500).send("Error:" + err));
+}
+
+exports.findUserByEmail = function (req, res) {
+  // #swagger.tags = ['User']
+  // #swagger.description = 'Obtner un usuario por su email'
+  const { email } = req.body;
+  console.log("FIND user by email", req.body);
+
+  User.findOne({ email })
+    .then(user => res.send(user))
+    .catch(err => res.status(500).send("Error:" + err));
+}
+
+exports.create = function (req, res) {
+  // #swagger.tags = ['User']
+  // #swagger.description = 'Crear un usuario'
+
+  const { username, email } = req.body;
+
+  const user = new User({
+    username,
+    email
+  })
+
+  user.save()
+    .then(
+      () => res.send("Created user succesfully"))
+    .catch(
+      (err) => res.status(500).send("Server Error:" + err)
+    )
+}
+
 exports.delete = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['User']
    * #swagger.description = 'Borrar un usuario por ObjectId'
    */
@@ -39,50 +81,4 @@ exports.delete = function (req, res) {
     });
 };
 
-exports.findUserByUsername = function (req, res) {
-  /**
-   * #swagger.tags = ['User']
-   * #swagger.description = 'Obtener un usuario por su username'
-   */
-  const { username } = req.body;
-  console.log("FIND user by username", req.body);
 
-  User.findOne({ name: username })
-    .then(user => res.send(user))
-    .catch(err => res.status(500).send("Error:" + err));
-}
-
-exports.findUserByEmail = function (req, res) {
-  /**
-   * #swagger.tags = ['User']
-   * #swagger.description = 'Obtener un usuario por su email'
-   */
-  const { email } = req.body;
-  console.log("FIND user by email", req.body);
-
-  User.findOne({ email })
-    .then(user => res.send(user))
-    .catch(err => res.status(500).send("Error:" + err));
-}
-
-exports.create = function (req, res) {
-  /**
-   * #swagger.tags = ['User']
-   * #swagger.description = 'Crear un usuario'
-   */
-  console.log("CREATE User");
-
-  const { username, email } = req.body;
-
-  const user = new User({
-    username,
-    email  
-  })
-
-  user.save()
-    .then(
-      () => res.send("Created user succesfully"))
-    .catch(
-      (err) => res.status(500).send("Server Error:" + err)
-    )
-}

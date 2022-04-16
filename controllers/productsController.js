@@ -2,7 +2,7 @@
 const Product = require('../models/Product');
 
 exports.getAll = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['Product']
    * #swagger.description = 'Obtener todos los productos enlistados en Pricebin'
    */
@@ -14,7 +14,7 @@ exports.getAll = function (req, res) {
 
 
 exports.getOne = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['Product']
    * #swagger.description = 'Obtener un producto por ObjectId'
    */
@@ -26,7 +26,7 @@ exports.getOne = function (req, res) {
 };
 
 exports.delete = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['Product']
    * #swagger.description = 'Borrar un producto por ObjectId'
    */
@@ -40,7 +40,7 @@ exports.delete = function (req, res) {
 };
 
 exports.create = function (req, res) {
-  /**
+  /*
    * #swagger.tags = ['Product']
    * #swagger.description = 'Registrar un nuevo producto con o sin lista de precios'
    */
@@ -67,7 +67,7 @@ exports.create = function (req, res) {
 /* PRODUCT-PRICE CRUD */
 
 exports.addPrice = async function(req, res) {
-  /**
+  /*
    * #swagger.tags = ['Product']
    * #swagger.description = 'Registrar un precio de un producto por ObjectId'
    */
@@ -95,7 +95,7 @@ exports.addPrice = async function(req, res) {
 }
 
 exports.updatePrice = function(req, res) {
-  /**
+  /*
    * #swagger.tags = ['Product']
    * #swagger.description = 'Actualizar el precio de un producto en una tienda, dado el nuevo monto y los ObjectId de producto y precio'
    */
