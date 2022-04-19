@@ -2,7 +2,8 @@ const swaggerAutogen = require('swagger-autogen')()
 const {
     USER_GET,
     CREATE_USER,
-    PRODUCT_PRICE_UPDATE
+    PRODUCT_PRICE_UPDATE,
+    RATE_REQUEST,
 } = require('./examples/definitions')
 // const { dirname } = require('path');
 // const appDir = dirname(require.main.filename);
@@ -48,11 +49,16 @@ const doc = {
             "name": "Product",
             "description": "Endpoints"
         },
+        {
+            "name": "Conversion",
+            "description": "Endpoints"
+        },
     ],
     definitions: {
         User: USER_GET,
         CreateUser: CREATE_USER,
         UpdatePrice: PRODUCT_PRICE_UPDATE,
+        GetConversionRate: RATE_REQUEST,
     }
 }
 

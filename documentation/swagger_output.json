@@ -23,6 +23,10 @@
     {
       "name": "Product",
       "description": "Endpoints"
+    },
+    {
+      "name": "Conversion",
+      "description": "Endpoints"
     }
   ],
   "schemes": [
@@ -36,6 +40,48 @@
     "application/json"
   ],
   "paths": {
+    "/convert": {
+      "post": {
+        "tags": [
+          "Conversion"
+        ],
+        "description": "Obtener el tipo de cambio y opcionalmente un monto convertido",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "example": "any"
+                },
+                "fromCurrency": {
+                  "example": "any"
+                },
+                "toCurrency": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "description": "",
@@ -708,6 +754,27 @@
         "productId",
         "priceId",
         "newAmount"
+      ]
+    },
+    "GetConversionRate": {
+      "type": "object",
+      "properties": {
+        "toCurrency": {
+          "type": "string",
+          "example": "USD"
+        },
+        "fromCurrency": {
+          "type": "string",
+          "example": "MXN"
+        },
+        "amount": {
+          "type": "number",
+          "example": 200
+        }
+      },
+      "required": [
+        "toCurrency",
+        "fromCurrency"
       ]
     }
   }

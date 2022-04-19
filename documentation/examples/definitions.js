@@ -28,3 +28,9 @@ exports.PRODUCT_PRICE_UPDATE = {
     $priceId:"624a298c8e3e8109ab1754b2",
     $newAmount: 150
   }
+
+exports.RATE_REQUEST = {
+    $toCurrency:"USD",
+    $fromCurrency:"MXN",
+    amount:200
+}

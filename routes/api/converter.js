@@ -7,8 +7,13 @@ const formatAmount = (x) => Math.round(x * 100) / 100;
 const URL_GET = (fromCurrency, toCurrency) => `https://free.currconv.com/api/v7/convert?q=${fromCurrency}_${toCurrency}&compact=ultra&apiKey=${CC_API_KEY}`
 
 exports.getCurrencyRate = async (req, res) => {
-    let { amount, fromCurrency, toCurrency } = req.body;
+    /* 
+     #swagger.tags = ['Conversion']
+     #swagger.description = 'Obtener el tipo de cambio y opcionalmente un monto convertido'
+     */
     
+    let { amount, fromCurrency, toCurrency } = req.body;
+
     if (!fromCurrency || !toCurrency) {
         res.status(400).send("Missing conversion parameters");
         return;
@@ -21,10 +26,10 @@ exports.getCurrencyRate = async (req, res) => {
     console.log("get", url);
 
 
-    
+
     axios.get(url)
         .then(response => {
-            const {data} = response;
+            const { data } = response;
             console.log('response', data);  // response is already parsed
             let query = `${fromCurrency}_${toCurrency}`
 
