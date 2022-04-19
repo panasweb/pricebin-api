@@ -2,3 +2,15 @@ Prices are an array of documents nested in Product document.
 How do you go about querying prices by id?
 
 https://www.mongodb.com/community/forums/t/finding-an-item-in-a-nested-object-of-objects/13229
+
+API DOCUMENTATION
+
+** Swagger Autogen Docs Guide: **
+https://medium.com/swlh/automatic-api-documentation-in-node-js-using-swagger-dd1ab3c78284
+
+Two dependencies:
+- swagger-autogen
+- swagger-ui-express
+
+Example with express router
+https://github.com/davibaltar/example-swagger-autogen-with-router/blob/main/swagger.js
