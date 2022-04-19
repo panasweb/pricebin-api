@@ -32,6 +32,12 @@ exports.getCurrencyRate = async (req, res) => {
                 res.status(404).send("Conversion rate not found for " + query);
                 return;
             } else {
+
+                if (amount) {
+                    let converted = formatAmount(amount * data[query]);
+                    data.amount = converted;
+                }
+
                 res.send(data);
             }
 
