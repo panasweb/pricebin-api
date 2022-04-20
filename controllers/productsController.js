@@ -112,8 +112,11 @@ exports.updatePrice = function(req, res) {
             "prices.$.amount": newAmount
         }
     })
-    .then(result => {
-      res.send(result);
+    .then(newDoc => {
+      res.send({
+        message: "Updated price succesfully",
+        newDoc: newDoc
+      });
     })
     .catch(err => {
       res.status(500).send(err);
