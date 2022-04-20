@@ -1,0 +1,1 @@
+- Create methods should return the id of object created

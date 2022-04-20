@@ -50,7 +50,10 @@ exports.create = function (req, res) {
 
   store.save()
     .then(
-      () => res.send("Created succesfully"))
+      (newDoc) => res.send({
+        message: "Created store succesfully",
+        newDoc: newDoc,
+      }))
     .catch(
       (err) => res.status(500).send("Server Error:" + err)
     )

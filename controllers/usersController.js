@@ -61,7 +61,10 @@ exports.create = function (req, res) {
 
   user.save()
     .then(
-      () => res.send("Created user succesfully"))
+      (newDoc) => res.send({
+        message: "Created user succesfully",
+        newDoc: newDoc,
+      }))
     .catch(
       (err) => res.status(500).send("Server Error:" + err)
     )

@@ -58,7 +58,10 @@ exports.create = function (req, res) {
 
   product.save()
     .then(
-        () => res.send("Created succesfully"))
+        (newDoc) => res.send({
+          message: "Created succesfully",
+          newDoc: newDoc,
+        }))
     .catch(
         (err) => res.status(500).send("Server Error:" + err)
     )
@@ -80,8 +83,8 @@ exports.addPrice = async function(req, res) {
     product.prices.push(price);
 
     product.save()
-    .then(result => {
-      res.send(result);
+    .then(newDoc => {
+      res.send(newDoc);
     })
     .catch(err => {
       console.error("Error adding price:", err);
