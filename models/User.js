@@ -1,6 +1,43 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const ListRecord = {
+    productName: {
+        type: String,
+        required: true,
+    },
+    brandName: {
+        type: String,
+        required: true,
+    },
+    storeName: {
+        type: String,
+        required: true,
+    },
+    amount: {
+        type: Number,
+        required: true,
+    },
+    quantity: {
+        type: Number,
+        default: 1,
+    },
+}
+
+
+const CurrentList = new Schema({
+
+    list: {
+        type: [ListRecord],
+        default: []
+    } , 
+    total: {
+        type: Number,
+        required: true,
+    },
+
+})
+
 const UserSchema = new Schema({
     username: {
         type: String,
@@ -25,6 +62,7 @@ const UserSchema = new Schema({
         type: Number,
         default: 0,
     },
+    currentList: CurrentList,
     UserLog: {
         nLists: {
             type:Number,
