@@ -42,3 +42,17 @@ const ProductListSchema = new Schema({
 })
 
 module.exports = mongoose.model("ProductList", ProductListSchema);
+
+/* 
+>> Current List:
+Yo anoto los productos que quiero comprar, cierro mi compu,
+voy al super, abro mi app en el celular y veo lo que tenía pensado comprar.
+
+QUITAR
+- fecha,
+- total,
+
+* dentro de usuario? 
+* 
+
+*/

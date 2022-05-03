@@ -46,15 +46,21 @@ exports.create = function (req, res) {
    */
   console.log("CREATE Product");
 
-  const {name, brand, type, img, prices} = req.body;
+  const {name, brand, type, prices, img} = req.body;
+  let product;
 
-  const product = new Product({
-    name,
-    brand,
-    type,
-    prices,
-    img
-  });
+  try {
+    product = new Product({
+      name,
+      brand,
+      type,
+      prices,
+      img
+    });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 
   product.save()
     .then(
@@ -63,7 +69,10 @@ exports.create = function (req, res) {
           newDoc: newDoc,
         }))
     .catch(
-        (err) => res.status(500).send("Server Error:" + err)
+        (err) => {
+          console.error(err);
+          res.status(500).send("Server Error:" + err);
+        }
     )
 }
 
@@ -84,7 +93,10 @@ exports.addPrice = async function(req, res) {
 
     product.save()
     .then(newDoc => {
-      res.send(newDoc);
+      res.send({
+        message: "Added new price succesfully",
+        newDoc: newDoc
+      });
     })
     .catch(err => {
       console.error("Error adding price:", err);

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+
 const UserSchema = new Schema({
     username: {
         type: String,
@@ -19,7 +20,7 @@ const UserSchema = new Schema({
     },
     rank: {
         type: Number,
-        default: 0,
+        default: 0,  
     },
     points: {
         type: Number,
@@ -57,7 +58,7 @@ const UserSchema = new Schema({
         globalTotal: {
             type: Number,
             default: 0
-        }
+        }  // esto se puede calcular anytime, en el back
     }
 })
 
