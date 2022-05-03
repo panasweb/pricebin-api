@@ -7,7 +7,7 @@
     "devstart": "nodemon ./bin/www",
     "swagger-autogen": "node ./documentation/swagger.js",
     "test_server": "TEST=true node ./bin/www",
-    "mochatest": "./node_modules/mocha/bin/mocha"
+    "mochatest": "./node_modules/mocha/bin/mocha.js"
   },
   "dependencies": {
     "async": "^3.2.3",
@@ -27,6 +27,7 @@
     "swagger-ui-express": "^4.3.0"
   },
   "devDependencies": {
+    "mocha": "^10.0.0",
     "nodemon": "^2.0.15"
   }
 }

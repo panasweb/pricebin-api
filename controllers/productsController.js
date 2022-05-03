@@ -124,16 +124,32 @@ exports.updatePrice = function(req, res) {
             "prices.$.amount": newAmount
         }
     })
-    .then(newDoc => {
+    .then(oldDoc => {
+      console.log("Updated doc prices", oldDoc.prices);
       res.send({
         message: "Updated price succesfully",
-        newDoc: newDoc
+        newDoc: oldDoc, // returns previous doc
       });
     })
     .catch(err => {
       res.status(500).send(err);
     })
 }
+
+
+exports.findByName = function(req, res) {
+  const {name, brand} = req.body;
+  Product.findOne({name, brand})
+  .then(product => {
+    console.log("Found a product");
+    res.status(200).send(product);
+  })
+  .catch(err => {
+    console.error("Product.findByName Error", err);
+    res.status(500).send(err);
+  })
+}
+
 /*
 Example request to updatePrice
 {

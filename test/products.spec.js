@@ -1,119 +1,115 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
 const assert = require('assert');
-const Product = require('../models/product')
-
+const Product = require('../models/Product')
+const Store = require('../models/Store');
 /*
-Crear una bicicleta, listar todas las bicicletas, 
-añadir bicicleta, 
-encontrar bici por código, 
-eliminar bicicleta.
+Crear un producto, 
+listar todos los productos, 
+añadir producto con 1 precio, 
+encontrar producto por id, 
+encontrar producto por nombre y marca, 
+eliminar producto.
 */
+
+let StoreKey;
+let productId;
 
 describe('Test Products Model', () => {
 
-    // Single db connection for every test
+    // Single db connection for every test. Dummy store and product
     before(function(done) {
         this.timeout(10000);
         const mongoDB = process.env.TESTDB_CONNECTION
         mongoose.connect(mongoDB, {useNewUrlParser: true})
         const db = mongoose.connection
         db.on('error', console.error.bind(console, 'connection error'))
-        db.once('open', function(){
+        db.once('open', async function(){
+
+            const newStore = await Store.create({
+                name: '7 Eleven'
+            })
+
+            StoreKey = newStore._id;
+            console.log("Store Key", StoreKey);
+
+            const newProduct = await Product.create({
+                name: 'Name',
+                brand: 'Brand',
+                type: 'Despensa',
+                prices: [{
+                    amount: 108,
+                    currency: 'MXN',
+                    store: '7 Eleven',
+                    StoreKey: StoreKey,  
+                }]
+            })
+
+            productId = newProduct._id;
+            console.log("Product Id", productId);
+
             done()
         })
+        
     })
 
     // Close db connection 
-    after(function(done){
+    after(async function() {
+
+        await Store.deleteMany();
+        await Product.deleteMany();
         const db = mongoose.connection
         db.close()
-        done()
+
     })
 
-    // CREATE
+    // 1. CREATE
     describe('Create new product', ()=>{
-        it('should create a a Product Document without error', ()=>{
+        it('should create a a Product Document without error', async ()=>{
+            const price = {
+                amount: 100,
+                currency: 'MXN',
+                store: '7 Eleven',
+                StoreKey: StoreKey,
+            }
             
+            const product = await Product.create({
+                name: 'Ejemplo',
+                brand: 'Ejemplo',
+                type: 'Farmacia',
+                prices: [price]
+            });
+
+            assert.equal(product.prices.length, 1);
+            assert.equal(product.prices[0].store, "7 Eleven");
+            assert.ok(product.prices[0].date);
+            assert.equal(product.name, "Ejemplo");
+            assert.equal(product.brand, "Ejemplo");
+            assert.equal(product.type, "Farmacia");
+
+            await Product.findByIdAndDelete(product._id);
+
         })
     });
 
-    // GET ALL
-    describe('Bicicleta.allBicis', ()=>{
-        it('should return empty list', (done)=>{
-            Bicicleta.allBicis(function(err, bicis){
-                assert.equal(bicis.length, 0)
+    // 2. GET ALL
+    describe('Get all products', ()=>{
+        it('should a list with one product', (done)=>{
+            Product.find({}, function(err, results){
+                assert.equal(results.length, 1);
                 done()
             })
         })
     })
 
-    // INSERT 
-    describe('Bicicletas.add', ()=>{
-        it('should add a new Bicicleta Instance to the DB', (done)=>{
-            let bici = new Bicicleta({code: 1, color: 'verde', modelo: 'urbana'})
-            Bicicleta.add(bici, function(err, newBici){
-                if(err) console.log(err)
-                Bicicleta.allBicis(function(err, bicis){
-                    assert.equal(bicis.length, 1)
-                    assert.equal(bicis[0].code, bici.code)
 
-                    done()
-                })
-            })
+    // 3. FIND BY ID
+    describe('Find Product by ID', ()=>{
+        it('It should find and return the dummy bike', async ()=>{
+            const product = await Product.findById(productId);
+            assert.ok(product);
+            assert.equal(product.prices[0].amount, 108);
         })
     })
 
-
-    // FIND
-    describe('Bicicleta.findByCode', ()=>{
-        it('should return bike with code 1', (done)=>{
-            Bicicleta.allBicis(function(err, bicis){
-                assert.equal(bicis.length, 0)
-
-                let bici = new Bicicleta({code: 1, color: 'verde', modelo: 'urbana'})
-                Bicicleta.add(bici, function(err, newBike){
-                    if(err) console.log(err)
-
-                    let bici2 = new Bicicleta({code: 2, color: 'blanca', modelo: 'montaña'})
-                    Bicicleta.add(bici2, function(err, newBike){                        
-                        if(err) console.log(err)
-
-                        Bicicleta.findByCode(1, function(err, targetBici){
-                            assert.equal(targetBici.code, bici.code)
-                            assert.equal(targetBici.color, bici.color)
-                            assert.equal(targetBici.modelo, bici.modelo)
-
-                            done()
-                        })
-                    })
-                })
-            })
-        })
-    })
-
-
-    // REMOVE
-    describe('Remove a bike by its code', ()=>{
-        it('should delete bike with code 1', (done)=>{
-            Bicicleta.allBicis(function(err, bicis){
-                assert.equal(bicis.length, 0)
-
-                let bici = new Bicicleta({code: 1, color: 'verde', modelo: 'urbana'})
-                Bicicleta.add(bici, function(err, newBike){
-                    if(err) console.log(err)
-                    Bicicleta.allBicis(function(err, bicis){
-                        assert.equal(bicis.length, 1)
-                        Bicicleta.removeByCode(1, function(err, cb){
-                            Bicicleta.allBicis(function(err, bicis){
-                                assert.equal(bicis.length, 0)
-                            
-                                done()
-                            })
-                        })
-                    })
-                })
-            })
-        })
-    })
 })
