@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
-    "swagger-autogen": "node ./documentation/swagger.js"
+    "swagger-autogen": "node ./documentation/swagger.js",
+    "test_server": "TEST=true node ./bin/www",
+    "mochatest": "./node_modules/mocha/bin/mocha"
   },
   "dependencies": {
     "async": "^3.2.3",
