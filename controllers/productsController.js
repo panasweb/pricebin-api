@@ -137,25 +137,16 @@ exports.updatePrice = function(req, res) {
 }
 
 
-exports.findByName = function(req, res) {
-  const {name, brand} = req.body;
-  Product.findOne({name, brand})
-  .then(product => {
-    console.log("Found a product");
-    res.status(200).send(product);
+exports.findProductsByName = function(req, res) {
+  const {name} = req.body;
+
+  Product.find({name: {$regex: name, $options: 'i'}})
+  .then(products => {
+    res.status(200).send(products);
   })
   .catch(err => {
-    console.error("Product.findByName Error", err);
+    console.error("Find By Name Error", err);
     res.status(500).send(err);
   })
 }
-
-/*
-Example request to updatePrice
-{
-  "productId":"624a298c8e3e8109ab1754b1",
-  "priceId":"624a298c8e3e8109ab1754b2",
-  "newAmount": 150
-}
-*/
 

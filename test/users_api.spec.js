@@ -5,14 +5,6 @@ const Product = require('../models/Product')
 const Store = require('../models/Store');
 const axios = require('axios');
 
-/*
-Crear un producto, 
-listar todos los productos, 
-añadir producto con 1 precio, 
-encontrar producto por id, 
-encontrar producto por nombre y marca, 
-eliminar producto.
-*/
 
 let StoreKey;
 let productId;
@@ -39,7 +31,7 @@ describe('Test Products API endpoints', () => {
             console.log("Store Key", StoreKey);
 
             const newProduct = await Product.create({
-                name: 'Desinfectante Multiusos 750ml',
+                name: 'Name',
                 brand: 'Brand',
                 type: 'Despensa',
                 prices: [{
@@ -115,7 +107,7 @@ describe('Test Products API endpoints', () => {
             assert.equal(data.prices.length, 1);
             assert.equal(data.prices[0].store, "7 Eleven");
             assert.ok(data.prices[0].date);
-            assert.equal(data.name, "Desinfectante Multiusos 750ml");
+            assert.equal(data.name, "Name");
             assert.equal(data.brand, "Brand");
             assert.equal(data.type, "Despensa");
         })
@@ -173,19 +165,6 @@ describe('Test Products API endpoints', () => {
             assert.equal(newDoc.prices.length, 2)
             assert.equal(newDoc.prices[0].amount, 80.15)
         })
-    });
-
-    // Find by Desinfectante Multiusos 750ml and Id
-    describe('POST /by-name', ()=>{
-        it('It should find and return the dummy product', async ()=>{
-            let url = BASE_URL + 'by-name';
-            
-            const {data} = await axios.post(url,{
-                name: 'desinfectante'
-            });
-
-            assert.equal(data.length, 1);
-        });
     });
 
 })
