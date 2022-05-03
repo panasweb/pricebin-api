@@ -175,7 +175,7 @@ describe('Test Products API endpoints', () => {
         })
     });
 
-    // Find by Desinfectante Multiusos 750ml and Id
+    // 6. Find by Desinfectante Multiusos 750ml and Id
     describe('POST /by-name', ()=>{
         it('It should find and return the dummy product', async ()=>{
             let url = BASE_URL + 'by-name';

@@ -1,20 +1,15 @@
 require('dotenv').config()
 const mongoose = require('mongoose')
 const assert = require('assert');
-const Product = require('../models/Product')
-const Store = require('../models/Store');
+const User = require('../models/User')
 const axios = require('axios');
 
+let userId;
 
-let StoreKey;
-let productId;
-let priceId;
+let BASE_URL = 'http://localhost:3010/users/'
 
-let BASE_URL = 'http://localhost:3010/products/'
+describe('Test Users API endpoints', () => {
 
-describe('Test Products API endpoints', () => {
-
-    // Single db connection for every test. Dummy store and product
     before(function(done) {
         this.timeout(10000);
         const mongoDB = process.env.TESTDB_CONNECTION
@@ -23,72 +18,43 @@ describe('Test Products API endpoints', () => {
         db.on('error', console.error.bind(console, 'connection error'))
         db.once('open', async function(){
 
-            const newStore = await Store.create({
-                name: '7 Eleven'
+            const newUser = await User.create({
+                email: 'user@user.com'
             })
 
-            StoreKey = newStore._id;
-            console.log("Store Key", StoreKey);
-
-            const newProduct = await Product.create({
-                name: 'Name',
-                brand: 'Brand',
-                type: 'Despensa',
-                prices: [{
-                    amount: 108,
-                    currency: 'MXN',
-                    store: '7 Eleven',
-                    StoreKey: StoreKey,  
-                }]
-            })
-
-            productId = newProduct._id;
-            priceId = newProduct.prices[0]._id;
-            console.log("Product Id", productId);
+            userId = newUser._id;
 
             done()
         })
-        
     })
 
     // Close db connection 
     after(async function() {
-
-        await Store.deleteMany();
-        await Product.deleteMany();
+        await User.deleteMany();
         const db = mongoose.connection
         db.close()
-
     })
 
     // 1. CREATE
-    describe('POST /products', ()=>{
-        it('should create a a Product Document without error', async ()=>{
-            const price = {
-                amount: 100,
-                currency: 'MXN',
-                store: '7 Eleven',
-                StoreKey: StoreKey,
-            }
-            
-            const product = {
-                name: 'Ejemplo',
-                brand: 'Ejemplo',
-                type: 'Farmacia',
-                prices: [price]
-            };
-
-            const {data} = await axios.post(BASE_URL, product);
+    describe('POST /users', ()=>{
+        it('should create a a User Document without error', async ()=>{
+            const {data} = await axios.post(BASE_URL, {
+                username: 'jarch',
+                email: 'e@chao.mx'
+            });
 
             assert.ok(data.message);
             assert.ok(data.newDoc);
+            assert.ok(data.newDoc.UserLog);
+            assert.equal(data.newDoc.username, 'jarch');
+            assert.equal(data.newDoc.email, 'e@chao.mx');
 
         })
     });
 
     // // 2. GET ALL
-    describe('GET /products', ()=>{
-        it('should a list with one product', async () => {
+    describe('GET /users', ()=>{
+        it('should a list with users', async () => {
             
             const {data} = await axios.get(BASE_URL);
             assert.ok(data.length);
@@ -97,74 +63,32 @@ describe('Test Products API endpoints', () => {
 
 
     // 3. FIND BY ID
-    describe('Find Product by ID', ()=>{
-        it('It should find and return the dummy product', async ()=>{
-
-            let url = BASE_URL + productId;
+    describe('Find User by ID', ()=>{
+        it('It should find and return the dummy user', async ()=>{
+            let url = BASE_URL + userId;
 
             const {data} = await axios.get(url);
 
-            assert.equal(data.prices.length, 1);
-            assert.equal(data.prices[0].store, "7 Eleven");
-            assert.ok(data.prices[0].date);
-            assert.equal(data.name, "Name");
-            assert.equal(data.brand, "Brand");
-            assert.equal(data.type, "Despensa");
-        })
-    })
-
-    // 4. ADD PRICE
-    describe('Add new price to dummy product', ()=>{
-        it('Should add a new price to dummy product', async ()=>{
-
-            let url = BASE_URL + 'add-price';
+            assert.equal(data.rank, 0);
+            assert.equal(data.points, 0);
+            assert.equal(data.email, "user@user.com");
+    })})
+    
+    // 4. FIND BY EMAIL
+    describe('Find User by email', ()=>{
+        it('It should find and return the dummy user', async ()=>{
             
-            const price = {
-                amount: 299,
-                currency: 'MXN',
-                store: '7 Eleven',
-                StoreKey: StoreKey,
-            }
+            let url = BASE_URL + 'by-email';
 
             const {data} = await axios.post(url, {
-                productId,
-                price
+                email: 'user@user.com'
             });
 
-            assert.ok(data.message);
-            assert.ok(data.newDoc);
+            assert.ok(data);
+            assert.equal(data.rank, 0);
+            assert.equal(data.points, 0);
+            assert.equal(data.email, "user@user.com");
+    })})
 
-            assert.equal(data.newDoc.prices.length, 2);
-            assert.equal(data.newDoc.prices[1].store, "7 Eleven");
-            assert.equal(data.newDoc.prices[1].amount, 299);
-        })
-    });
-
-
-    // 5. UPDATE PRICE
-    describe('Add new price to dummy product', ()=>{
-        it('Should add a new price to dummy product', async () => {
-
-            const url = BASE_URL + 'update-price';
-            const newAmount = 80.15;
-
-            assert.ok(priceId);
-
-            const {data} = await axios.post(url, {
-                productId,
-                priceId,
-                newAmount
-            });
-
-            assert.ok(data.message);
-            assert.ok(data.newDoc);
-            
-            const newDoc = await Product.findById(productId);
-            console.log("Updated doc", newDoc);
-
-            assert.equal(newDoc.prices.length, 2)
-            assert.equal(newDoc.prices[0].amount, 80.15)
-        })
-    });
 
 })
