@@ -38,18 +38,65 @@ exports.getOne = function (req, res) {
     .catch((err) => res.status(500).send("Error: " + err));
 };
 
-exports.delete = function (req, res) {
+exports.delete = async function (req, res) {
   /*
    * #swagger.tags = ['ProductList']
    * #swagger.description = 'Borrar una lista de productos por ObjectId'
    */
-  ProductList.findOneAndDelete({ _id: req.params.id })
-    .then((deletedDoc) => {
-      res.send("Deleted succesfully: " + deletedDoc);
+  const {id} = req.params;
+  console.log("DELETE List");
+
+  const session = await db.startSession();
+
+  let transactionError;
+  let updatedUser;
+
+  try {
+    session.startTransaction();
+    const plist = await ProductList.findById(id);
+
+    if (!plist) {
+      throw new Error("No List found");
+    }
+
+    // upate stats first, then delete
+    const user = await User.findById(plist.UserKey);
+
+    if (user) {
+      // update stats of user 
+      try {
+        updatedUser = await updateUserLogStats(user, plist, session, true);
+      }
+      catch (e) {
+        console.error("ERROR", e);
+
+      }
+      
+    }
+    else {
+      console.log("No user to update stats");
+    }
+
+    await ProductList.findByIdAndDelete(id);
+
+    await session.commitTransaction();
+    console.log("Transaction committed succesfully");
+
+  } 
+  catch (e) {
+    transactionError = e;
+    await session.abortTransaction();
+  }
+
+  if (transactionError) {
+    res.status(500).send(transactionError);
+  } else {
+    res.send({
+      message: "Deleted product list",
+      newDoc: updatedUser
     })
-    .catch((err) => {
-      res.status(500).send("Error:" + err);
-    });
+  }
+
 };
 
 
@@ -65,6 +112,7 @@ exports.create = async (req, res) => {
   const session = await db.startSession()  // we can use mongoose or db
 
   let transactionError;
+  let resultProductList;
 
   try {
     session.startTransaction();
@@ -91,13 +139,13 @@ exports.create = async (req, res) => {
       UserKey
     });
   
-    await productList.save({session});
+    resultProductList = await productList.save({session});
     console.log("Saved product list succesfully");
 
     let {skipUpdate} = req.body;
 
     if (!skipUpdate) {
-      await updateUserLogStats(user, productList, session);
+      await updateUserLogStats(user, productList, session, false);
       console.log("Updated user log succesfully");
     } else {
       console.log("Skipping user log update...");
@@ -117,7 +165,10 @@ exports.create = async (req, res) => {
   if (transactionError) {
     res.status(400).send("Error inserting list: " + transactionError);
   } else {
-    res.send("Inserted product list succesfully")
+    res.send({
+      message:"Inserted product list succesfully",
+      newDoc: resultProductList,
+    })
   }
 }
 
@@ -135,25 +186,31 @@ exports.getListsOfUser = function(req, res) {
 }
 
 
-/*
- * List operations
- * - On Add,Delete: update total, update averages
- * - restart date and update averages
- * 
- */
-
-
-const updateUserLogStats = async (userInstance, listInstance, session) => {
+const updateUserLogStats = async (userInstance, listInstance, session, isDeletion) => {
   // Use direct assignment and .save()
   console.log("Updating user log of:", userInstance.email);
   const {UserLog} = userInstance;
 
   let amount = listInstance.total;
 
-  let globalTotal = UserLog.globalTotal + amount;
-  // Update List Average
-  let listAverage = addToAverage(UserLog.listAverage, UserLog.nLists, amount)
-  let nLists  = UserLog.nLists + 1;
+  // update global total and number of lists
+  let globalTotal
+  let listAverage
+  let nLists  
+
+  if (isDeletion) {
+    console.log("is deletion");
+    globalTotal = UserLog.globalTotal - amount;
+    listAverage = removeFromAverage(UserLog.listAverage, UserLog.nLists, amount)
+    nLists = UserLog.nLists - 1;
+  } 
+  else {
+    console.log("is addition");
+    globalTotal = UserLog.globalTotal + amount;
+    listAverage = addToAverage(UserLog.listAverage, UserLog.nLists, amount);
+    nLists = UserLog.nLists + 1;
+  } 
+  
 
   let startDate = new Date(UserLog.start);
 
@@ -184,53 +241,5 @@ const updateUserLogStats = async (userInstance, listInstance, session) => {
   return userInstance.save({session});
 }
 
-// ========= DEPRECATED
 
-const createDEPRECATED = async function(req, res) {
-  const {list, date, UserKey} = req.body;
-  let {total} = req.body;
-
-  console.log("CREATE List for user with id", UserKey);
-
-  let user;
-
-  try {
-    user = await User.findById(UserKey);
-  } catch (error) {
-    res.status(500).send("Error: " + error);
-  }
-
-  if (!user) {
-    res.status(404).send(`User ${UserKey} not found`);
-  }
-
-  if (!total) {
-    // calculate total
-    total = calculateTotal(list);
-  }
-
-  const productList = new ProductList({
-    list,
-    date,
-    total,
-    UserKey
-  });
-
-  productList.save()
-  .then(async (result) => {
-    console.log("product list save result", result);
-
-    // update user's stats
-    let response = await updateUserLogStats(user, productList);
-    if (response.ok){
-      res.send("Created product list succesfully")
-    } else {
-      res.status(401).send("Error updating log:" +  response.error);
-    }
-    
-  })  // NOTE: we could instead do a double-chained then()
-  .catch(
-      (err) => res.status(500).send("Server Error:" + err)
-  )
-  
-}
+// TODO: restart count, fetch all lists of a user and rebuild user log

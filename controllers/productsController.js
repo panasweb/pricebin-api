@@ -124,22 +124,29 @@ exports.updatePrice = function(req, res) {
             "prices.$.amount": newAmount
         }
     })
-    .then(newDoc => {
+    .then(oldDoc => {
+      console.log("Updated doc prices", oldDoc.prices);
       res.send({
         message: "Updated price succesfully",
-        newDoc: newDoc
+        newDoc: oldDoc, // returns previous doc
       });
     })
     .catch(err => {
       res.status(500).send(err);
     })
 }
-/*
-Example request to updatePrice
-{
-  "productId":"624a298c8e3e8109ab1754b1",
-  "priceId":"624a298c8e3e8109ab1754b2",
-  "newAmount": 150
+
+
+exports.findProductsByName = function(req, res) {
+  const {name} = req.body;
+
+  Product.find({name: {$regex: name, $options: 'i'}})
+  .then(products => {
+    res.status(200).send(products);
+  })
+  .catch(err => {
+    console.error("Find By Name Error", err);
+    res.status(500).send(err);
+  })
 }
-*/
 

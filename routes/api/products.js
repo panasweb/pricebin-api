@@ -7,6 +7,8 @@ router.post("/", product.create);
 
 router.post("/update-price", product.updatePrice);
 
+router.post("/by-name", product.findProductsByName);
+
 router.post("/add-price", product.addPrice);
 
 router.post("/delete/:id", product.delete);

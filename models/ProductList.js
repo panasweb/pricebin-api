@@ -8,7 +8,7 @@ const ListRecord = {
     },
     brandName: {
         type: String,
-        required: true,
+        default: null,
     },
     storeName: {
         type: String,
@@ -25,7 +25,10 @@ const ListRecord = {
 }
 
 const ProductListSchema = new Schema({
-    list: [ListRecord], // not a schema, so no Object Id
+    list: {
+        type: [ListRecord],
+        validate: [productListLength, '{PATH} should have exactly 2 values']
+    }, // not a schema, so no Object Id
     date: {
         type: Date,
         default: Date.now()
@@ -40,6 +43,10 @@ const ProductListSchema = new Schema({
         required: true,
     }
 })
+
+function productListLength(val) {
+    return val.length > 0;
+}
 
 module.exports = mongoose.model("ProductList", ProductListSchema);
 
