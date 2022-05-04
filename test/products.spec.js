@@ -3,14 +3,7 @@ const mongoose = require('mongoose')
 const assert = require('assert');
 const Product = require('../models/Product')
 const Store = require('../models/Store');
-/*
-Crear un producto, 
-listar todos los productos, 
-añadir producto con 1 precio, 
-encontrar producto por id, 
-encontrar producto por nombre y marca, 
-eliminar producto.
-*/
+
 
 let StoreKey;
 let productId;
@@ -31,7 +24,6 @@ describe('Test Products Model', () => {
             })
 
             StoreKey = newStore._id;
-            console.log("Store Key", StoreKey);
 
             const newProduct = await Product.create({
                 name: 'Name',
@@ -46,7 +38,6 @@ describe('Test Products Model', () => {
             })
 
             productId = newProduct._id;
-            console.log("Product Id", productId);
 
             done()
         })

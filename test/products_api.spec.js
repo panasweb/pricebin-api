@@ -5,14 +5,6 @@ const Product = require('../models/Product')
 const Store = require('../models/Store');
 const axios = require('axios');
 
-/*
-Crear un producto, 
-listar todos los productos, 
-añadir producto con 1 precio, 
-encontrar producto por id, 
-encontrar producto por nombre y marca, 
-eliminar producto.
-*/
 
 let StoreKey;
 let productId;
@@ -36,7 +28,6 @@ describe('Test Products API endpoints', () => {
             })
 
             StoreKey = newStore._id;
-            console.log("Store Key", StoreKey);
 
             const newProduct = await Product.create({
                 name: 'Desinfectante Multiusos 750ml',
@@ -52,7 +43,6 @@ describe('Test Products API endpoints', () => {
 
             productId = newProduct._id;
             priceId = newProduct.prices[0]._id;
-            console.log("Product Id", productId);
 
             done()
         })
@@ -168,7 +158,6 @@ describe('Test Products API endpoints', () => {
             assert.ok(data.newDoc);
             
             const newDoc = await Product.findById(productId);
-            console.log("Updated doc", newDoc);
 
             assert.equal(newDoc.prices.length, 2)
             assert.equal(newDoc.prices[0].amount, 80.15)
