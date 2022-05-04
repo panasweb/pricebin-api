@@ -66,7 +66,6 @@ exports.delete = async function (req, res) {
       // update stats of user 
       try {
         updatedUser = await updateUserLogStats(user, plist, session, true);
-        console.log("Updated user log stats:", updatedUser);
       }
       catch (e) {
         console.error("ERROR", e);
