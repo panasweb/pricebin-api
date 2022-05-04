@@ -65,6 +65,7 @@ exports.create = async (req, res) => {
   const session = await db.startSession()  // we can use mongoose or db
 
   let transactionError;
+  let resultProductList;
 
   try {
     session.startTransaction();
@@ -91,7 +92,7 @@ exports.create = async (req, res) => {
       UserKey
     });
   
-    await productList.save({session});
+    resultProductList = await productList.save({session});
     console.log("Saved product list succesfully");
 
     let {skipUpdate} = req.body;
@@ -117,7 +118,10 @@ exports.create = async (req, res) => {
   if (transactionError) {
     res.status(400).send("Error inserting list: " + transactionError);
   } else {
-    res.send("Inserted product list succesfully")
+    res.send({
+      message:"Inserted product list succesfully",
+      newDoc: resultProductList,
+    })
   }
 }
 
