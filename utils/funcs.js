@@ -17,7 +17,7 @@ exports.addToAverage = function (average, N, value) {
 }
 
 exports.removeFromAverage = function(average, N, value) {
-    if (size == 1) return 0; // wrong but then adding a value "works"
+    if (N == 1) return 0; // wrong but then adding a value "works"
     // if (size == 1) return NAN;     // mathematically proper
     // assert(size > 1);              // debug-mode check
     // if(size < 2) throw(...)        // always check
