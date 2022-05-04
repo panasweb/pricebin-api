@@ -147,17 +147,29 @@ exports.getListsOfUser = function(req, res) {
  */
 
 
-const updateUserLogStats = async (userInstance, listInstance, session) => {
+const updateUserLogStats = async (userInstance, listInstance, session, isDeletion) => {
   // Use direct assignment and .save()
   console.log("Updating user log of:", userInstance.email);
   const {UserLog} = userInstance;
 
   let amount = listInstance.total;
 
-  let globalTotal = UserLog.globalTotal + amount;
-  // Update List Average
-  let listAverage = addToAverage(UserLog.listAverage, UserLog.nLists, amount)
-  let nLists  = UserLog.nLists + 1;
+  // update global total and number of lists
+  let globalTotal
+  let listAverage
+  let nLists  
+
+  if (isDeletion) {
+    globalTotal = UserLog.globalTotal - amount;
+    listAverage = removeFromAverage(UserLog.listAverage, UserLog.nLists, amount)
+    UserLog.nLists - 1;
+  } 
+  else {
+    globalTotal = UserLog.globalTotal + amount;
+    listAverage = addToAverage(UserLog.listAverage, UserLog.nLists, amount);
+    UserLog.nLists + 1;
+  } 
+  
 
   let startDate = new Date(UserLog.start);
 
