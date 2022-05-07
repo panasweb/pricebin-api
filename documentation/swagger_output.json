@@ -27,6 +27,10 @@
     {
       "name": "Conversion",
       "description": "Endpoints"
+    },
+    {
+      "name": "Votes",
+      "description": "Endpoints"
     }
   ],
   "schemes": [
@@ -162,12 +166,25 @@
       }
     },
     "/users/by-username": {
-      "get": {
+      "post": {
         "tags": [
           "User"
         ],
         "description": "Obtner un usuario por su username",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -179,12 +196,25 @@
       }
     },
     "/users/by-email": {
-      "get": {
+      "post": {
         "tags": [
           "User"
         ],
         "description": "Obtner un usuario por su email",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -502,10 +532,10 @@
                 "type": {
                   "example": "any"
                 },
-                "img": {
+                "prices": {
                   "example": "any"
                 },
-                "prices": {
+                "img": {
                   "example": "any"
                 }
               }
@@ -557,6 +587,33 @@
                   "example": "any"
                 },
                 "newAmount": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/by-name": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
                   "example": "any"
                 }
               }
@@ -639,6 +696,132 @@
         "parameters": [
           {
             "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/votes/": {
+      "post": {
+        "tags": [
+          "Vote"
+        ],
+        "description": "Crear un voto a favor de un precio",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "UserKey": {
+                  "example": "any"
+                },
+                "PriceKey": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/votes/delete/{id}": {
+      "post": {
+        "tags": [
+          "Vote"
+        ],
+        "description": "Borrar un voto a favor de un precio",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "UserKey": {
+                  "example": "any"
+                },
+                "PriceKey": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/votesuser/{userid}/{voteid}": {
+      "get": {
+        "tags": [
+          "Vote"
+        ],
+        "description": "Encontrar si usuario votó a favor de un precio",
+        "parameters": [
+          {
+            "name": "userid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "voteid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/votesprice/{priceid}": {
+      "get": {
+        "tags": [
+          "Vote"
+        ],
+        "description": "Devolver la cuenta de votos",
+        "parameters": [
+          {
+            "name": "priceid",
             "in": "path",
             "required": true,
             "type": "string"
