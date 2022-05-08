@@ -56,7 +56,8 @@ exports.create = function (req, res) {
 
   const user = new User({
     username,
-    email
+    email,
+    currentList: []
   })
 
   user.save()
@@ -83,5 +84,37 @@ exports.delete = function (req, res) {
       res.status(500).send("Error:" + err);
     });
 };
+/*
+exports.addProduct = function (req, res) {
+
+  console.log("FETCH User by Id: ", req.params.id);
+  var product = req.body.product
+  User.findOneAndUpdate({ _id: req.params.id}, {$push: {currentList: product}})
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => res.status(500).send("Error: " + err));
+};
+*/
+exports.addProduct = function (req, res) {
+
+  console.log("FETCH User by Id: ", req.params.id);
+  var product = req.body.product
+  User.findOneAndUpdate({ _id: req.params.id}, {$push: {'currentList.list': product}})
+  .then((user) => {
+    res.status(200).send(user);
+  })
+  .catch((err) => res.status(500).send("Error: " + err));
+};
 
 
+exports.deleteProduct = function (req, res) {
+
+  console.log("FETCH User by Id: ", req.params.id);
+  var product = req.body.product
+  User.findOneAndUpdate({ _id: req.params.id}, { $pull: { 'currentList.list': { $elemMatch: { productName: product.productName, brandName: product.brandName, storeName: product.brandName } } } })
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => res.status(500).send("Error: " + err));
+};

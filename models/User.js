@@ -25,7 +25,7 @@ const ListRecord = {
 }
 
 
-const CurrentList = new Schema({
+const CurrentList = {
 
     list: {
         type: [ListRecord],
@@ -36,7 +36,7 @@ const CurrentList = new Schema({
         required: true,
     },
 
-})
+}
 
 const UserSchema = new Schema({
     username: {
