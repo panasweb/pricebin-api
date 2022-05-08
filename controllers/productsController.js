@@ -1,5 +1,6 @@
 
 const Product = require('../models/Product');
+const {resetVotes} = require('./votesController')
 
 exports.getAll = function (req, res) {
   /*
@@ -31,7 +32,8 @@ exports.delete = function (req, res) {
    * #swagger.description = 'Borrar un producto por ObjectId'
    */
   Product.findOneAndDelete({ _id: req.params.id })
-    .then((deletedDoc) => {
+    .then(async (deletedDoc) => {
+      await resetVotes(req.params.id);
       res.send("Deleted succesfully: " + deletedDoc);
     })
     .catch((err) => {
@@ -124,7 +126,8 @@ exports.updatePrice = function(req, res) {
             "prices.$.amount": newAmount
         }
     })
-    .then(oldDoc => {
+    .then(async (oldDoc) => {
+      await resetVotes(priceId);
       console.log("Updated doc prices", oldDoc.prices);
       res.send({
         message: "Updated price succesfully",

@@ -15,6 +15,7 @@ const usersRouter = require('./routes/api/users');
 const storesRouter = require('./routes/api/stores');
 const listsRouter = require('./routes/api/lists');
 const productsRouter = require('./routes/api/products');
+const votesRouter = require('./routes/api/votes');
 
 const app = express();
 const db = require('./db/db');
@@ -31,6 +32,7 @@ app.use('/users', usersRouter);
 app.use('/stores', storesRouter);
 app.use('/lists', listsRouter);
 app.use('/products', productsRouter);
+app.use('/votes', votesRouter);
 
 // DOCS
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
