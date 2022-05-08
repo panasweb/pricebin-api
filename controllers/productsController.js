@@ -1,5 +1,6 @@
 
 const Product = require('../models/Product');
+const {resetVotes} = require('./votesController')
 
 exports.getAll = function (req, res) {
   /*
@@ -31,7 +32,8 @@ exports.delete = function (req, res) {
    * #swagger.description = 'Borrar un producto por ObjectId'
    */
   Product.findOneAndDelete({ _id: req.params.id })
-    .then((deletedDoc) => {
+    .then(async (deletedDoc) => {
+      await resetVotes(req.params.id);
       res.send("Deleted succesfully: " + deletedDoc);
     })
     .catch((err) => {
@@ -46,15 +48,21 @@ exports.create = function (req, res) {
    */
   console.log("CREATE Product");
 
-  const {name, brand, type, img, prices} = req.body;
+  const {name, brand, type, prices, img} = req.body;
+  let product;
 
-  const product = new Product({
-    name,
-    brand,
-    type,
-    prices,
-    img
-  });
+  try {
+    product = new Product({
+      name,
+      brand,
+      type,
+      prices,
+      img
+    });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 
   product.save()
     .then(
@@ -63,7 +71,10 @@ exports.create = function (req, res) {
           newDoc: newDoc,
         }))
     .catch(
-        (err) => res.status(500).send("Server Error:" + err)
+        (err) => {
+          console.error(err);
+          res.status(500).send("Server Error:" + err);
+        }
     )
 }
 
@@ -84,7 +95,10 @@ exports.addPrice = async function(req, res) {
 
     product.save()
     .then(newDoc => {
-      res.send(newDoc);
+      res.send({
+        message: "Added new price succesfully",
+        newDoc: newDoc
+      });
     })
     .catch(err => {
       console.error("Error adding price:", err);
@@ -112,22 +126,30 @@ exports.updatePrice = function(req, res) {
             "prices.$.amount": newAmount
         }
     })
-    .then(newDoc => {
+    .then(async (oldDoc) => {
+      await resetVotes(priceId);
+      console.log("Updated doc prices", oldDoc.prices);
       res.send({
         message: "Updated price succesfully",
-        newDoc: newDoc
+        newDoc: oldDoc, // returns previous doc
       });
     })
     .catch(err => {
       res.status(500).send(err);
     })
 }
-/*
-Example request to updatePrice
-{
-  "productId":"624a298c8e3e8109ab1754b1",
-  "priceId":"624a298c8e3e8109ab1754b2",
-  "newAmount": 150
+
+
+exports.findProductsByName = function(req, res) {
+  const {name} = req.body;
+
+  Product.find({name: {$regex: name, $options: 'i'}})
+  .then(products => {
+    res.status(200).send(products);
+  })
+  .catch(err => {
+    console.error("Find By Name Error", err);
+    res.status(500).send(err);
+  })
 }
-*/
 

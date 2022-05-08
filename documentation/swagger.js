@@ -53,6 +53,10 @@ const doc = {
             "name": "Conversion",
             "description": "Endpoints"
         },
+        {
+            "name": "Votes",
+            "description": "Endpoints"
+        },
     ],
     definitions: {
         User: USER_GET,

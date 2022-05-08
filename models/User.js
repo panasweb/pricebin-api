@@ -56,7 +56,7 @@ const UserSchema = new Schema({
     },
     rank: {
         type: Number,
-        default: 0,
+        default: 0,  
     },
     points: {
         type: Number,
@@ -95,7 +95,7 @@ const UserSchema = new Schema({
         globalTotal: {
             type: Number,
             default: 0
-        }
+        }  // esto se puede calcular anytime, en el back
     }
 })
 

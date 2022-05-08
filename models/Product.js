@@ -15,8 +15,8 @@ const PriceSchema = new Schema({
         type: String,
         maxlength: 3,  // ISO 4217
         trim: true,
-    },
-    store: {
+    }, // MXN
+    store: {  
         type:String,
         required:true,
     },

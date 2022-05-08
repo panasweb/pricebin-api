@@ -19,3 +19,5 @@ const ProductTypeSchema = new Schema({
 })
 
 module.exports = mongoose.model("ProductType", ProductTypeSchema);
+// Ventaja: podemos limitar a un conjunto definido de opciones (departamentos de producto)
+// Desventaja: limitamos a los usuarios jeje
