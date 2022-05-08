@@ -84,7 +84,28 @@ exports.getVoteCount = function (req, res) {
     .catch(err => {
         res.status(500).send(err);
     })
+}
 
+
+exports.getVoteCounts = async function (req, res) {
+    const {priceIds} = req.body;  // array of objectid strings
+
+    let counts = [];
+    let count;
+
+    try {
+        for (let pid of priceIds) {
+            count = await Vote.countDocuments({PriceKey: pid})
+            counts.push({
+                PriceKey:pid,
+                count
+            })
+        }
+
+        res.send(counts);
+    } catch (e) {
+        res.status(500).send(e);
+    }
 }
 
 exports.getVotesOfUser = function (req, res) {
@@ -92,4 +113,17 @@ exports.getVotesOfUser = function (req, res) {
 }
 exports.getAll = function (req, res) {
     // TODO
+}
+
+
+exports.resetVotes = async function (priceId) {
+    try {
+        await Vote.deleteMany({PriceKey: priceId});
+        return true;
+    }
+    catch (e) {
+        console.error("Error resetting votes", e);
+        return false;
+    }
+
 }
