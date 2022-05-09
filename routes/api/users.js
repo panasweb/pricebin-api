@@ -15,5 +15,7 @@ router.post("/by-email", user.findUserByEmail);
 
 router.get("/:id", user.getOne);
 
+router.post("/product/add", user.addProduct);
 
+router.post("/product/delete", user.deleteProduct);
 module.exports = router;

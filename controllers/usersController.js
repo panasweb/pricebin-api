@@ -100,8 +100,12 @@ exports.addProduct = function (req, res) {
 
   console.log("FETCH User by Id: ", req.params.id);
   var product = req.body.product
-  User.findOneAndUpdate({ _id: req.params.id}, {$push: {'currentList.list': product}})
+  var email = req.body.email
+  console.log("producto:")
+  console.log(product)
+  User.findOneAndUpdate({ email: email}, {$push: {'currentList.list': product}})
   .then((user) => {
+    console.log(user.email)
     res.status(200).send(user);
   })
   .catch((err) => res.status(500).send("Error: " + err));
@@ -112,9 +116,11 @@ exports.deleteProduct = function (req, res) {
 
   console.log("FETCH User by Id: ", req.params.id);
   var product = req.body.product
-  User.findOneAndUpdate({ _id: req.params.id}, { $pull: { 'currentList.list': { $elemMatch: { productName: product.productName, brandName: product.brandName, storeName: product.brandName } } } })
+  var email = req.body.email
+  User.findOneAndUpdate({ email: email}, { $pull: { 'currentList.list': { $elemMatch: { productName: product.productName, brandName: product.brandName, storeName: product.brandName } } } })
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => res.status(500).send("Error: " + err));
 };
+
