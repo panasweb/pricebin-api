@@ -84,21 +84,13 @@ exports.delete = function (req, res) {
       res.status(500).send("Error:" + err);
     });
 };
+
+
+exports.addProduct = function (req, res) {
 /*
-exports.addProduct = function (req, res) {
-
-  console.log("FETCH User by Id: ", req.params.id);
-  var product = req.body.product
-  User.findOneAndUpdate({ _id: req.params.id}, {$push: {currentList: product}})
-    .then((user) => {
-      res.status(200).send(user);
-    })
-    .catch((err) => res.status(500).send("Error: " + err));
-};
-*/
-exports.addProduct = function (req, res) {
-
-  console.log("FETCH User by Id: ", req.params.id);
+   * #swagger.tags = ['CurrentList']
+   * #swagger.description = 'Añadir producto a Lista Actual de usuario'
+   */
   var product = req.body.product
   var email = req.body.email
   console.log("producto:")
@@ -113,14 +105,39 @@ exports.addProduct = function (req, res) {
 
 
 exports.deleteProduct = function (req, res) {
-
-  console.log("FETCH User by Id: ", req.params.id);
+  /*
+   * #swagger.tags = ['CurrentList']
+   * #swagger.description = 'Quitar producto de la Lista Actual'
+   */
   var product = req.body.product
   var email = req.body.email
-  User.findOneAndUpdate({ email: email}, { $pull: { 'currentList.list': { $elemMatch: { productName: product.productName, brandName: product.brandName, storeName: product.brandName } } } })
+  User.findOneAndUpdate({ email: email}, { $set: { 'currentList.list': { $elemMatch: { productName: product.productName, brandName: product.brandName, storeName: product.brandName } } } })
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => res.status(500).send("Error: " + err));
+
+    // ENHANCEMENT: la lógica sea por índice en la lista
 };
 
+exports.clearCurrentList = function (req, res) {
+/*
+   * #swagger.tags = ['CurrentList']
+   * #swagger.description = 'Limpiar la Lista Actual de usuario'
+   */
+  const {email} = req.body; // should work with userid too
+  console.log("CLEAR LIST FOR USER", email );
+
+  User.findOneAndUpdate({email}, {$set: {'currentList.list': []}})
+  .then( user => {
+    res.send({
+      message: "Cleared list succesfully",
+      newDoc: user,
+    })
+  })
+  .catch(err => {
+    console.log("ERROR", err);
+    res.status(500)
+    .send(err);
+  })
+}

@@ -141,6 +141,10 @@ exports.updatePrice = function(req, res) {
 
 
 exports.findProductsByName = function(req, res) {
+  /*
+   * #swagger.tags = ['Product']
+   * #swagger.description = 'Buscar productos por nombre (regex)'
+   */
   const {name} = req.body;
 
   Product.find({name: {$regex: name, $options: 'i'}})

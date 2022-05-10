@@ -57,6 +57,10 @@ const doc = {
             "name": "Votes",
             "description": "Endpoints"
         },
+        {
+            "name": "CurrentList",
+            "description": "Endpoints"
+        },
     ],
     definitions: {
         User: USER_GET,
