@@ -22,6 +22,8 @@ router.post("/product/delete", user.deleteProduct);
 
 router.post("/product/clear", user.clearCurrentList);
 
+router.post("/product/update", user.updateCurrentList);
+
 router.post("/product/save", user.saveCurrentList, list.create);
 
 module.exports = router;

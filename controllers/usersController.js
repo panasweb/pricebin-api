@@ -122,6 +122,7 @@ exports.deleteProduct = function (req, res) {
     // ENHANCEMENT: la lógica sea por índice en la lista
 };
 
+
 exports.clearCurrentList = function (req, res) {
   /*
    * #swagger.tags = ['CurrentList']
@@ -143,6 +144,25 @@ exports.clearCurrentList = function (req, res) {
     .send(err);
   })
 }
+
+exports.updateCurrentList = function (req, res) {
+  const {email, list} = req.body;
+  console.log("UPDATE LIST FOR USER", email );
+
+  User.findOneAndUpdate({email}, {$set: {'currentList.list': list}})
+  .then( user => {
+    res.send({
+      message: "Updated list succesfully",
+      newDoc: user,
+    })
+  })
+  .catch(err => {
+    console.log("ERROR", err);
+    res.status(500)
+    .send(err);
+  })
+}
+
 
 exports.saveCurrentList = async function(req, res, next) {
   /*
