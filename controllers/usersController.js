@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const ProductList = require('../models/ProductList');
+const { db } = require('../models/User');
 
 exports.getAll = function (req, res) {
   /*
@@ -121,7 +123,7 @@ exports.deleteProduct = function (req, res) {
 };
 
 exports.clearCurrentList = function (req, res) {
-/*
+  /*
    * #swagger.tags = ['CurrentList']
    * #swagger.description = 'Limpiar la Lista Actual de usuario'
    */
@@ -140,4 +142,42 @@ exports.clearCurrentList = function (req, res) {
     res.status(500)
     .send(err);
   })
+}
+
+exports.saveCurrentList = async function(req, res, next) {
+  /*
+   * #swagger.tags = ['CurrentList']
+   * #swagger.description = 'Guardar la Lista Actual al historial del usuario'
+   */
+
+  const {UserKey} = req.body;
+
+  // 1. get user
+  // 2. get currentlist of user. if no list, return
+  // 3. send req data to next() : list, date, UserKey
+
+  try {
+    const user = await User.findById(UserKey, null, {session});
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Get Current List
+    const list = user.currentList?.list;
+    if (!list || list.length == 0) {
+      throw new Error("There is no current list")
+    }
+
+    const date = Date.now();
+
+    req.list = list;
+    req.date = date;
+    next()
+  }
+  catch (error) {
+    
+    res.status(500).send("Error getting current list: " + error);
+  }
+
 }

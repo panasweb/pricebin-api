@@ -1,28 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const ListRecord = require('./ListRecord')
 
-const ListRecord = {
-    productName: {
-        type: String,
-        required: true,
-    },
-    brandName: {
-        type: String,
-        default: null,
-    },
-    storeName: {
-        type: String,
-        required: true,
-    },
-    amount: {
-        type: Number,
-        required: true,
-    },
-    quantity: {
-        type: Number,
-        default: 1,
-    },
-}
 
 const ProductListSchema = new Schema({
     list: {
