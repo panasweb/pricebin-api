@@ -1,6 +1,6 @@
 
 const Product = require('../models/Product');
-const {resetVotes} = require('./votesController')
+const { resetVotes } = require('./votesController')
 
 exports.getAll = function (req, res) {
   /*
@@ -48,7 +48,7 @@ exports.create = function (req, res) {
    */
   console.log("CREATE Product");
 
-  const {name, brand, type, prices, img} = req.body;
+  const { name, brand, type, prices, img } = req.body;
   let product;
 
   try {
@@ -66,26 +66,26 @@ exports.create = function (req, res) {
 
   product.save()
     .then(
-        (newDoc) => res.send({
-          message: "Created succesfully",
-          newDoc: newDoc,
-        }))
+      (newDoc) => res.send({
+        message: "Created succesfully",
+        newDoc: newDoc,
+      }))
     .catch(
-        (err) => {
-          console.error(err);
-          res.status(500).send("Server Error:" + err);
-        }
+      (err) => {
+        console.error(err);
+        res.status(500).send("Server Error:" + err);
+      }
     )
 }
 
 /* PRODUCT-PRICE CRUD */
 
-exports.addPrice = async function(req, res) {
+exports.addPrice = async function (req, res) {
   /*
    * #swagger.tags = ['Product']
    * #swagger.description = 'Registrar un precio de un producto por ObjectId'
    */
-  const {productId, price} = req.body;
+  const { productId, price } = req.body;
   try {
     const product = await Product.findById(productId);
     console.log("Add price to product:");
@@ -94,16 +94,16 @@ exports.addPrice = async function(req, res) {
     product.prices.push(price);
 
     product.save()
-    .then(newDoc => {
-      res.send({
-        message: "Added new price succesfully",
-        newDoc: newDoc
-      });
-    })
-    .catch(err => {
-      console.error("Error adding price:", err);
-      res.status(500).send(err);
-    })
+      .then(newDoc => {
+        res.send({
+          message: "Added new price succesfully",
+          newDoc: newDoc
+        });
+      })
+      .catch(err => {
+        console.error("Error adding price:", err);
+        res.status(500).send(err);
+      })
 
   } catch (error) {
     console.error("Error finding product with id", productId);
@@ -111,20 +111,20 @@ exports.addPrice = async function(req, res) {
   }
 }
 
-exports.updatePrice = function(req, res) {
+exports.updatePrice = function (req, res) {
   /*
    * #swagger.tags = ['Product']
    * #swagger.description = 'Actualizar el precio de un producto en una tienda, dado el nuevo monto y los ObjectId de producto y precio'
    */
-  const {productId, priceId, newAmount} = req.body;
+  const { productId, priceId, newAmount } = req.body;
   console.log("UPDATE Price", newAmount)
-  
+
   Product.findOneAndUpdate(
     { "_id": productId, "prices._id": priceId },
-    { 
-        "$set": {
-            "prices.$.amount": newAmount
-        }
+    {
+      "$set": {
+        "prices.$.amount": newAmount
+      }
     })
     .then(async (oldDoc) => {
       await resetVotes(priceId);
@@ -140,20 +140,40 @@ exports.updatePrice = function(req, res) {
 }
 
 
-exports.findProductsByName = function(req, res) {
+exports.findProductsByName = function (req, res) {
   /*
    * #swagger.tags = ['Product']
    * #swagger.description = 'Buscar productos por nombre (regex)'
    */
-  const {name} = req.body;
+  const { name } = req.body;
 
-  Product.find({name: {$regex: name, $options: 'i'}})
-  .then(products => {
-    res.status(200).send(products);
+  Product.find({ name: { $regex: name, $options: 'i' } })
+    .then(products => {
+      res.status(200).send(products);
+    })
+    .catch(err => {
+      console.error("Find By Name Error", err);
+      res.status(500).send(err);
+    })
+}
+
+exports.findProductsByNameAndBrand = function (req, res) {
+  /*
+   * #swagger.tags = ['Product']
+   * #swagger.description = 'Encontrar un producto por nombre y Marca'
+   */
+  const { productName, brandName } = req.body;
+
+  Product.find({
+    name: { $regex: productName, $options: 'i' },
+    brand: { $regex: brandName, $options: 'i' }
   })
-  .catch(err => {
-    console.error("Find By Name Error", err);
-    res.status(500).send(err);
-  })
+    .then(products => {
+      res.status(200).send(products);
+    })
+    .catch(err => {
+      console.error("Find By Name Error", err);
+      res.status(500).send(err);
+    })
 }
 

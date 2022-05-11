@@ -32,8 +32,8 @@ exports.findStoreByName = function (req, res) {
   console.log("FIND store by name", req.body);
   let nameRe = new RegExp(name, 'i');  // case insensitive
 
-  Store.find({ name: nameRe })
-    .then(stores => res.send(stores))
+  Store.findOne({ name: nameRe })
+    .then(store => res.send(store))
     .catch(err => res.status(500).send("Error:" + err));
 }
 
