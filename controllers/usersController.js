@@ -1,4 +1,6 @@
 const User = require('../models/User');
+const ProductList = require('../models/ProductList');
+const { db } = require('../models/User');
 
 exports.getAll = function (req, res) {
   /*
@@ -56,7 +58,8 @@ exports.create = function (req, res) {
 
   const user = new User({
     username,
-    email
+    email,
+    currentList: []
   })
 
   user.save()
@@ -85,3 +88,116 @@ exports.delete = function (req, res) {
 };
 
 
+exports.addProduct = function (req, res) {
+/*
+   * #swagger.tags = ['CurrentList']
+   * #swagger.description = 'Añadir producto a Lista Actual de usuario'
+   */
+  var product = req.body.product
+  var email = req.body.email
+  console.log("producto:")
+  console.log(product)
+  User.findOneAndUpdate({ email: email}, {$push: {'currentList.list': product}})
+  .then((user) => {
+    console.log(user.email)
+    res.status(200).send(user);
+  })
+  .catch((err) => res.status(500).send("Error: " + err));
+};
+
+
+exports.deleteProduct = function (req, res) {
+  /*
+   * #swagger.tags = ['CurrentList']
+   * #swagger.description = 'Quitar producto de la Lista Actual'
+   */
+  var product = req.body.product
+  var email = req.body.email
+  User.findOneAndUpdate({ email: email}, { $set: { 'currentList.list': { $elemMatch: { productName: product.productName, brandName: product.brandName, storeName: product.brandName } } } })
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch((err) => res.status(500).send("Error: " + err));
+
+    // ENHANCEMENT: la lógica sea por índice en la lista
+};
+
+
+exports.clearCurrentList = function (req, res) {
+  /*
+   * #swagger.tags = ['CurrentList']
+   * #swagger.description = 'Limpiar la Lista Actual de usuario'
+   */
+  const {email} = req.body; // should work with userid too
+  console.log("CLEAR LIST FOR USER", email );
+
+  User.findOneAndUpdate({email}, {$set: {'currentList.list': []}})
+  .then( user => {
+    res.send({
+      message: "Cleared list succesfully",
+      newDoc: user,
+    })
+  })
+  .catch(err => {
+    console.log("ERROR", err);
+    res.status(500)
+    .send(err);
+  })
+}
+
+exports.updateCurrentList = function (req, res) {
+  const {email, list} = req.body;
+  console.log("UPDATE LIST FOR USER", email );
+
+  User.findOneAndUpdate({email}, {$set: {'currentList.list': list}})
+  .then( user => {
+    res.send({
+      message: "Updated list succesfully",
+      newDoc: user,
+    })
+  })
+  .catch(err => {
+    console.log("ERROR", err);
+    res.status(500)
+    .send(err);
+  })
+}
+
+
+exports.saveCurrentList = async function(req, res, next) {
+  /*
+   * #swagger.tags = ['CurrentList']
+   * #swagger.description = 'Guardar la Lista Actual al historial del usuario'
+   */
+
+  const {UserKey} = req.body;
+
+  // 1. get user
+  // 2. get currentlist of user. if no list, return
+  // 3. send req data to next() : list, date, UserKey
+
+  try {
+    const user = await User.findById(UserKey, null, {session});
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Get Current List
+    const list = user.currentList?.list;
+    if (!list || list.length == 0) {
+      throw new Error("There is no current list")
+    }
+
+    const date = Date.now();
+
+    req.list = list;
+    req.date = date;
+    next()
+  }
+  catch (error) {
+    
+    res.status(500).send("Error getting current list: " + error);
+  }
+
+}

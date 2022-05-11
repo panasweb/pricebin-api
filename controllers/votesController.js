@@ -88,6 +88,10 @@ exports.getVoteCount = function (req, res) {
 
 
 exports.getVoteCounts = async function (req, res) {
+    /*
+    #swagger.tags = ['Vote']
+    #swagger.description = 'Devolver la cuenta de votos de una lista de precios'
+    */
     const {priceIds} = req.body;  // array of objectid strings
 
     let counts = [];

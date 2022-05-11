@@ -31,6 +31,10 @@
     {
       "name": "Votes",
       "description": "Endpoints"
+    },
+    {
+      "name": "CurrentList",
+      "description": "Endpoints"
     }
   ],
   "schemes": [
@@ -237,6 +241,102 @@
             "in": "path",
             "required": true,
             "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/product/add": {
+      "post": {
+        "tags": [
+          "CurrentList"
+        ],
+        "description": "Añadir producto a Lista Actual de usuario",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "product": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/product/delete": {
+      "post": {
+        "tags": [
+          "CurrentList"
+        ],
+        "description": "Quitar producto de la Lista Actual",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "product": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/product/clear": {
+      "post": {
+        "tags": [
+          "CurrentList"
+        ],
+        "description": "Limpiar la Lista Actual de usuario",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
@@ -605,7 +705,10 @@
     },
     "/products/by-name": {
       "post": {
-        "description": "",
+        "tags": [
+          "Product"
+        ],
+        "description": "Buscar productos por nombre (regex)",
         "parameters": [
           {
             "name": "body",
@@ -783,7 +886,7 @@
         }
       }
     },
-    "/votesuser/{userid}/{voteid}": {
+    "/votes/user/{userid}/{voteid}": {
       "get": {
         "tags": [
           "Vote"
@@ -813,7 +916,37 @@
         }
       }
     },
-    "/votesprice/{priceid}": {
+    "/votes/price/counts": {
+      "post": {
+        "tags": [
+          "Vote"
+        ],
+        "description": "Devolver la cuenta de votos de una lista de precios",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "priceIds": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/votes/price/{priceid}": {
       "get": {
         "tags": [
           "Vote"
