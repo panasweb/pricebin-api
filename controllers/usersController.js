@@ -97,6 +97,8 @@ exports.addProduct = function (req, res) {
   var email = req.body.email
   console.log("producto:")
   console.log(product)
+  console.log("email")
+  console.log(email)
   User.findOneAndUpdate({ email: email}, {$push: {'currentList.list': product}})
   .then((user) => {
     console.log(user.email)
