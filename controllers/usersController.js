@@ -59,7 +59,6 @@ exports.create = function (req, res) {
   const user = new User({
     username,
     email,
-    currentList: []
   })
 
   user.save()
@@ -69,7 +68,10 @@ exports.create = function (req, res) {
         newDoc: newDoc,
       }))
     .catch(
-      (err) => res.status(500).send("Server Error:" + err)
+      (err) => {
+        console.error("error creating user", err);
+        res.status(500).send("Server Error:" + err)
+      }
     )
 }
 
