@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const VoteSchema = new Schema({
     UserKey: {
-        type: Schema.Types.ObjectId, 
+        type: String, 
         ref: "User", 
         required: true,
     },

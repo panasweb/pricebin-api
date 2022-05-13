@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Vote = require('../models/Vote');
 const ProductList = require('../models/ProductList');
 const { db } = require('../models/User');
 
@@ -59,7 +60,6 @@ exports.create = function (req, res) {
   const user = new User({
     username,
     email,
-    currentList: []
   })
 
   user.save()
@@ -69,7 +69,10 @@ exports.create = function (req, res) {
         newDoc: newDoc,
       }))
     .catch(
-      (err) => res.status(500).send("Server Error:" + err)
+      (err) => {
+        console.error("error creating user", err);
+        res.status(500).send("Server Error:" + err)
+      }
     )
 }
 
@@ -78,12 +81,24 @@ exports.delete = function (req, res) {
    * #swagger.tags = ['User']
    * #swagger.description = 'Borrar un usuario por ObjectId'
    */
-  User.findOneAndDelete({ _id: req.params.id })
-    .then((deletedDoc) => {
-      res.send("Deleted succesfully: " + deletedDoc);
+  console.log("USER DELETE")
+  User.findByIdAndDelete(req.params.id)
+    .then(async (deletedUser) => {
+      // delete all lists of user
+      try {
+        await ProductList.deleteMany({UserKey: req.params.id});
+        if (deletedUser) {
+          await Vote.deleteMany({UserKey: deletedUser.email});
+        }
+        res.status(200).send("Deleted user associated data.");
+      }
+      catch (e) {
+        console.error(e);
+        res.status(500).send("Error deleting user associated data:", e);
+      }
     })
     .catch((err) => {
-      res.status(500).send("Error:" + err);
+      res.status(500).send("Error deleting user:" + err);
     });
 };
 
