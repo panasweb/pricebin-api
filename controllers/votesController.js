@@ -9,7 +9,6 @@ exports.create = async function (req, res) {
     #swagger.tags = ['Vote']
     #swagger.description = 'Crear un voto a favor de un precio'
     */
-
     const {UserKey, PriceKey} = req.body;
 
     const vote = new Vote({
@@ -29,6 +28,7 @@ exports.create = async function (req, res) {
     }
 
 }
+
 exports.delete = function (req, res) {
     /*
     #swagger.tags = ['Vote']
@@ -51,13 +51,14 @@ exports.findUserVote = function (req, res) {
     #swagger.tags = ['Vote']
     #swagger.description = 'Encontrar si usuario votó a favor de un precio'
     */
-    const {userId, priceId} = req.body;
+    const UserKey = req.params.userid;
+    const PriceKey = req.params.priceid;
 
-    Vote.findOne({userId, priceId})
+    Vote.findOne({UserKey, PriceKey})
     .then(doc => {
         // Test if no doc returns null
         res.send({
-            doc: doc
+            doc
         })
 
     })
