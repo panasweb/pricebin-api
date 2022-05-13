@@ -55,14 +55,11 @@ exports.create = function (req, res) {
   // #swagger.description = 'Crear un usuario'
 
   const { username, email } = req.body;
-  console.log("CREATE")
-  console.log("username", username);
-  console.log("email", email);
+
   const user = new User({
     username,
     email,
   })
-  console.log("new user instance created")
 
   user.save()
     .then(
@@ -72,7 +69,7 @@ exports.create = function (req, res) {
       }))
     .catch(
       (err) => {
-        console.error(err);
+        console.error("error creating user", err);
         res.status(500).send("Server Error:" + err)
       }
     )
