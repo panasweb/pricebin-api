@@ -139,6 +139,31 @@ exports.updatePrice = function(req, res) {
     })
 }
 
+exports.removePrice = function(req, res) {
+  // Needs to be admin authenticated;
+  const {productId, priceId} = req.body;
+  console.log("DELETE Price")
+
+  Product.findOneAndUpdate(
+    { "_id": productId },
+    { 
+        "$pull": {
+          "prices": {"_id": priceId}
+        }
+    })
+    .then(async (oldDoc) => {
+      await resetVotes(priceId);
+      res.send({
+        message: "Deleted price succesfully",
+        newDoc: oldDoc, // returns previous doc
+      });
+    })
+    .catch(err => {
+      console.log("Something went wrong", err);
+      res.status(500).send(err);
+    })
+}
+
 
 exports.findProductsByName = function(req, res) {
   const {name} = req.body;
