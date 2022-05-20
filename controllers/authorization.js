@@ -22,5 +22,9 @@ exports.adminRequired = function(req, res, next) {
                 next();
             }
         })
-        .catch((err) => res.status(500).send("Error [adminRequired route]: " + err));
+        .catch((err) => {
+            console.error("Error on Admin Check", UserKey);
+            console.error(err);
+            return res.status(500).send("Error [adminRequired route]: " + err)
+        });
 }
