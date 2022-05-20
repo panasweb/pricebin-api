@@ -33,7 +33,7 @@ const UserSchema = new Schema({
     },
     rank: {
         type: Number,
-        default: 0,  
+        default: 0,  // rank 10 is Admin
     },
     points: {
         type: Number,
@@ -73,7 +73,7 @@ const UserSchema = new Schema({
             type: Number,
             default: 0
         }  // esto se puede calcular anytime, en el back
-    }
+    },
 })
 
 function validEmail(email) {
