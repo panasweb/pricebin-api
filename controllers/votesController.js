@@ -25,7 +25,8 @@ exports.create = async function (req, res) {
         })
 
     } catch (e) {
-        return res.status(500).send(e);
+        console.error("Error on voting", e);
+        return res.status(500).send("Duplicate Vote.", e);
     }
 
 }
@@ -51,18 +52,27 @@ exports.findUserVote = function (req, res) {
     #swagger.tags = ['Vote']
     #swagger.description = 'Encontrar si usuario votó a favor de un precio'
     */
-    const {userId, priceId} = req.body;
+    const UserKey = req.params.userid;
+    const PriceKey = req.params.priceid;
 
-    Vote.findOne({userId, priceId})
+    if (!UserKey || !PriceKey) {
+        console.log("UserKey", UserKey);
+        console.log("PriceKey", PriceKey);
+        return res.status(500).send("Missing params /votes/user/:userid/:priceid");
+    }
+
+    Vote.findOne({UserKey, PriceKey})
     .then(doc => {
         // Test if no doc returns null
-        res.send({
-            doc: doc
+        console.log("Found vote?", doc);
+        return res.send({
+            doc
         })
 
     })
     .catch(err => {
-        res.status(500).send("Error: " + err);
+        console.error("Error finding vote", UserKey, PriceKey);
+        return res.status(500).send("Error: " + err);
     })
 }
 
