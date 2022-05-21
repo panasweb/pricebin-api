@@ -67,8 +67,6 @@ exports.create = async function (req, res) {
     avatar
   })
 
-  return res.send(user);
-
   user.save()
     .then(
       (newDoc) => res.send({
