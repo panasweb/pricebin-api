@@ -1,3 +1,4 @@
+const axios = require('axios');
 const WEEK_MILISECONDS = 1000 * 60 * 60 * 24 * 7;
 
 exports.calculateTotal = function (list) {
@@ -43,4 +44,21 @@ exports.recalculateMonths = function(startDate) {
 
 exports.roundTwoDecimals = function(num) {
     return Math.round(num * 100) / 100
+}
+
+exports.getPokemonAvatar = async function() {
+    const URL = 'https://pokeapi.co/api/v2/pokemon/';
+    const id = Math.max(Math.round(Math.random() * 250), 1)
+
+    // Get Request
+    try {
+        const {data} = await axios.get(URL + id);
+        console.log(data);
+        return data.sprites.versions['generation-ii'].crystal["front_default"];
+
+    } catch (e) {
+        console.error(e);
+        return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/132.png";
+    }
+
 }

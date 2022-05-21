@@ -1,1 +1,4 @@
-- CurrentList anidada en usuario
+1. ?
+1*. Rebuild User Stats endpoint
+2. Rebuild Swagger
+x. SendGrid

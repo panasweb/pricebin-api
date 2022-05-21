@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Vote = require('../models/Vote');
 const ProductList = require('../models/ProductList');
 const { db } = require('../models/User');
+const { getPokemonAvatar } = require('../utils/funcs');
 
 exports.getAll = function (req, res) {
   /*
@@ -51,16 +52,22 @@ exports.findUserByEmail = function (req, res) {
     .catch(err => res.status(500).send("Error:" + err));
 }
 
-exports.create = function (req, res) {
+exports.create = async function (req, res) {
   // #swagger.tags = ['User']
   // #swagger.description = 'Crear un usuario'
 
   const { username, email } = req.body;
 
+  const avatar = await getPokemonAvatar();
+  console.log(avatar);
+
   const user = new User({
     username,
     email,
+    avatar
   })
+
+  return res.send(user);
 
   user.save()
     .then(

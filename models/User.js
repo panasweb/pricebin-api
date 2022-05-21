@@ -23,6 +23,10 @@ const UserSchema = new Schema({
         trim: true,
         required: false,
     },
+    avatar: {
+        type: String, // url
+        required: false,
+    },
     email: {
         type: String,
         trim: true,
