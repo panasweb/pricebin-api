@@ -58,7 +58,8 @@ exports.getPokemonAvatar = async function() {
 
     } catch (e) {
         console.error(e);
-        return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/132.png";
+        //return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/132.png";
+        return null;
     }
 
 }

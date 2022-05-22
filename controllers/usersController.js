@@ -64,7 +64,7 @@ exports.create = async function (req, res) {
   const user = new User({
     username,
     email,
-    avatar
+    avatar: avatar || undefined
   })
 
   user.save()
