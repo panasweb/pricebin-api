@@ -55,7 +55,7 @@ const UserSchema = new Schema({
         },
         weeklyAverage: {
             type: Number,
-            default: 0,
+            default: 0,  // evaluate removal, difficult to compute
         },
         listAverage: {
             type: Number,

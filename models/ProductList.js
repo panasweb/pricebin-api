@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ListRecord = require('./ListRecord')
+const ListRecord = require('./ListRecord')  // subSchema
 
 
 const ProductListSchema = new Schema({

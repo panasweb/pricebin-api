@@ -1,5 +1,4 @@
 // Adding new lists should trigger stat updates in UserLog stats
-const { default: mongoose } = require("mongoose");
 const ProductList = require("../models/ProductList");
 const User = require("../models/User");
 const {

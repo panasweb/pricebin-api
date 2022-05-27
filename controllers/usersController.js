@@ -1,8 +1,15 @@
 const User = require('../models/User');
 const Vote = require('../models/Vote');
 const ProductList = require('../models/ProductList');
+const ObjectId = require('mongoose').Types.ObjectId;
 const { db } = require('../models/User');
 const { getPokemonAvatar } = require('../utils/funcs');
+const {
+
+  recalculateMonths,
+  recalculateWeeks,
+
+} = require('../utils/funcs');
 
 exports.getAll = function (req, res) {
   /*
@@ -232,63 +239,81 @@ exports.recalculateUserStats = async function(req, res) {
 
   const {UserKey} = req.body;
   
-  let User;
+  let _user;
   try {
-    User = await User.findById(UserKey);
+    _user = await User.findById(UserKey);
   }
   catch (e) {
       console.error("Error searching for User", UserKey);
+      console.error(e);
       return res.status(500).send(e);
   }
 
-  if (!User) {
+  if (!_user) {
     return res.status(404).send("User not found", UserKey);
   }
 
   try {
-    let nLists, nMonths, nWeeks, monthlyAverage, weeklyAverage, listAverage;
+    let nLists, nMonths, nWeeks, monthlyAverage, listAverage, globalTotal;
     nLists = await ProductList.countDocuments({UserKey});
 
-    console.log("User.UserLog.start", typeofUser.UserLog.start, User.UserLog.start)
-    nMonths = recalculateMonths(User.UserLog.start);
-    nWeeks = recalculateWeeks(User.UserLog.start);
+    console.log("User.UserLog.start", typeof _user.UserLog.start, _user.UserLog.start)
+    nMonths = recalculateMonths(_user.UserLog.start);
+    nWeeks = recalculateWeeks(_user.UserLog.start);
 
-    // monthly Average: compute sum on a month by month basis.
-    monthlyAverage = await ProductList.aggregate([
-      {$match: {UserKey:UserKey}},
+    /* AGGREGATIONS */
+    const _UserKey = ObjectId(UserKey);
+
+    const monthAverages = await ProductList.aggregate([
+      {$match: {UserKey:_UserKey}},  // months gte to UserLog.start
       {
         $group: {
           _id: {$dateToString: {"date": "$date", "format": "%Y-%m"}},
-          average: {$avg: 'total'}
+          average: {$avg: '$total'}
         }
       }
-    ])
-
-    listAverage = await ProductList.aggregate([
-      {$match: {UserKey:UserKey}},
-      {$group: {_id:null, average: {$avg: 'total'}}},
     ]).exec();
+
+    // Average over averages
+    console.log(monthAverages);
+    let sum = 0
+    monthAverages.forEach(o => {
+      sum += o.average;
+    })
+
+    monthlyAverage = (sum / (monthAverages.length || 1));
+
+    const listAvgQuery = await ProductList.aggregate([
+      {$match: {UserKey:_UserKey}},
+      {$group: {_id: null, average: {$avg: '$total'}}},
+    ]).exec();
+ 
+    listAverage = listAvgQuery[0].average;
+
+    const globalTotalQuery = await ProductList.aggregate([
+      {$match: {UserKey:_UserKey}},
+      {$group: {_id: null, sum: {$sum: '$total'}}},
+    ])
+    globalTotal = globalTotalQuery[0].sum;
+
+    weeklyTotal = globalTotal / nWeeks;  // from UserLog.start
   
-    console.dir({
+    const newUserLog = {
+      ..._user.UserLog,
       nLists,
       nMonths,
       nWeeks,
       listAverage,
       monthlyAverage,
-    })
+      globalTotal,
+      weeklyTotal
+    }
 
-    /**
-const getDayAverage = async (model, date) => {
-  // Depending on how date stored
-  const _dateFormatted = new Date(date).toDateString();
-  const average = await model.aggregate([
-    { $match: { date: _dateFormatted } },
-    { $group: { _id: null, average: { $avg: 'ppm' } } },
-  ]).exec();
-  return average;
-};
-     */
-    
+    console.log("Prev UserLog")
+    console.log(_user.UserLog)
+    console.log("New UserLog")
+    console.log(newUserLog);
+  
   }
   catch (e) {
     console.error("Error recalculating UserLog", e);
