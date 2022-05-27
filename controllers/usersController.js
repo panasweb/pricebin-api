@@ -1,8 +1,15 @@
 const User = require('../models/User');
 const Vote = require('../models/Vote');
 const ProductList = require('../models/ProductList');
+const ObjectId = require('mongoose').Types.ObjectId;
 const { db } = require('../models/User');
-const { getPokemonAvatar } = require('../utils/funcs');
+const { getPokemonAvatar, favoriteFromArray } = require('../utils/funcs');
+const {
+
+  recalculateMonths,
+  recalculateWeeks,
+
+} = require('../utils/funcs');
 
 exports.getAll = function (req, res) {
   /*
@@ -220,4 +227,153 @@ exports.saveCurrentList = async function(req, res, next) {
     res.status(500).send("Error getting current list: " + error);
   }
 
+}
+
+exports.getCoolStats = async function(req, res) {
+  const {UserKey} = req.body;
+  // Get favorite store:
+  // 1. fetch all product lists and unrap list array, group by storeName, get count, sort, return max
+  const userId = ObjectId(UserKey);
+
+  try {
+    const storeNameCounts = await ProductList.aggregate([
+      {$match: {UserKey: userId}},
+      {$unwind: "$list"},
+      {$group: {
+        _id: "$list.storeName",
+        count: {$sum: 1}
+      }}
+    ]).exec();
+  
+    console.log(storeNameCounts);
+
+    const favStore = storeNameCounts.length ? favoriteFromArray(storeNameCounts) : null;  // return _id of item with max count
+    console.log("Favorite store", favStore);
+    
+    const productNameCounts = await ProductList.aggregate([
+      {$match: {UserKey: userId}},
+      {$unwind: "$list"},
+      {$group: {
+        _id: "$list.productName",
+        count: {$sum: 1}
+      }}
+    ]).exec();
+  
+    console.log(productNameCounts);
+
+    const favProduct = productNameCounts.length ? favoriteFromArray(productNameCounts) : null;  // return _id of item with max count
+    console.log("Favorite product", favProduct);
+
+    return res.status(200).send({
+      favStore,
+      favProduct
+    });
+
+  } catch(e) {
+    console.error("getCoolStats error", e);
+    return res.status(500).send(e);
+  }
+
+}
+
+exports.recalculateUserStats = async function(req, res) {
+  /*
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Hacer el cómputo desde cero de UserLog'
+   */
+
+  const {UserKey} = req.body;
+  
+  let _user;
+  try {
+    _user = await User.findById(UserKey);
+  }
+  catch (e) {
+      console.error("Error searching for User", UserKey);
+      console.error(e);
+      return res.status(500).send(e);
+  }
+
+  if (!_user) {
+    return res.status(404).send("User not found", UserKey);
+  }
+
+  try {
+    let nLists, nMonths, nWeeks, monthlyAverage, listAverage, globalTotal;
+    nLists = await ProductList.countDocuments({UserKey});
+
+    console.log("User.UserLog.start", typeof _user.UserLog.start, _user.UserLog.start)
+    nMonths = recalculateMonths(_user.UserLog.start);
+    nWeeks = recalculateWeeks(_user.UserLog.start);
+
+    /* AGGREGATIONS */
+    const _UserKey = ObjectId(UserKey);
+
+    const monthAverages = await ProductList.aggregate([
+      {$match: {UserKey:_UserKey}},  // months gte to UserLog.start
+      {
+        $group: {
+          _id: {$dateToString: {"date": "$date", "format": "%Y-%m"}},
+          average: {$avg: '$total'}
+        }
+      }
+    ]).exec();
+
+    // Average over averages
+    console.log(monthAverages);
+    let sum = 0
+    monthAverages.forEach(o => {
+      sum += o.average;
+    })
+
+    monthlyAverage = (sum / (monthAverages.length || 1));
+
+    const listAvgQuery = await ProductList.aggregate([
+      {$match: {UserKey:_UserKey}},
+      {$group: {_id: null, average: {$avg: '$total'}}},
+    ]).exec();
+ 
+    listAverage = listAvgQuery[0].average;
+
+    const globalTotalQuery = await ProductList.aggregate([
+      {$match: {UserKey:_UserKey}},
+      {$group: {_id: null, sum: {$sum: '$total'}}},
+    ]);
+    globalTotal = globalTotalQuery[0].sum;
+
+    weeklyAverage = globalTotal / nWeeks;  // from UserLog.start
+  
+    const newUserLog = {
+      nLists,
+      nMonths,
+      nWeeks,
+      listAverage,
+      monthlyAverage,
+      globalTotal,
+      weeklyAverage,
+      start: _user.UserLog.start,
+    }
+
+    /* console.log("PREV UserLog")
+    console.log(_user.UserLog)
+    console.log("NEW UserLog")
+    console.log(newUserLog);   */
+
+    _user.UserLog = newUserLog;
+    await _user.save();
+  
+  }
+  catch (e) {
+    console.error("Error recalculating UserLog", e);
+    return res.status(500).send(e);
+  }
+
+  res.status(200).send("Recalculated succesfully");
+
+}
+
+
+exports.clearUserStats = async function (req, res) {
+  // reassign start and reset all to 0.
+  return;
 }

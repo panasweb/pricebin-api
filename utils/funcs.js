@@ -63,3 +63,17 @@ exports.getPokemonAvatar = async function() {
     }
 
 }
+
+exports.favoriteFromArray = function(objList) {
+    // objects are {_id, _count}
+    let max;
+    let maxCount = -1;
+    objList.forEach(o => {
+        if (o.count > maxCount) {
+            max = o;
+            maxCount = o.count;
+        }
+    })
+
+    return max._id;
+}
