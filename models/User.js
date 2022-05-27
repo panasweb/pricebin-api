@@ -7,7 +7,7 @@ const CurrentList = {
     list: {
         type: [ListRecord],
         default: []
-    } , 
+    }, 
     total: {
         type: Number,
         default: 0

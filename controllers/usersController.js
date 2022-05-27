@@ -3,7 +3,7 @@ const Vote = require('../models/Vote');
 const ProductList = require('../models/ProductList');
 const ObjectId = require('mongoose').Types.ObjectId;
 const { db } = require('../models/User');
-const { getPokemonAvatar } = require('../utils/funcs');
+const { getPokemonAvatar, favoriteFromArray } = require('../utils/funcs');
 const {
 
   recalculateMonths,
@@ -229,8 +229,53 @@ exports.saveCurrentList = async function(req, res, next) {
 
 }
 
+exports.getCoolStats = async function(req, res) {
+  const {UserKey} = req.body;
+  // Get favorite store:
+  // 1. fetch all product lists and unrap list array, group by storeName, get count, sort, return max
+  const userId = ObjectId(UserKey);
 
-// TODO: restart count, fetch all lists of a user and rebuild user log
+  try {
+    const storeNameCounts = await ProductList.aggregate([
+      {$match: {UserKey: userId}},
+      {$unwind: "$list"},
+      {$group: {
+        _id: "$list.storeName",
+        count: {$sum: 1}
+      }}
+    ]).exec();
+  
+    console.log(storeNameCounts);
+
+    const favStore = storeNameCounts.length ? favoriteFromArray(storeNameCounts) : null;  // return _id of item with max count
+    console.log("Favorite store", favStore);
+    
+    const productNameCounts = await ProductList.aggregate([
+      {$match: {UserKey: userId}},
+      {$unwind: "$list"},
+      {$group: {
+        _id: "$list.productName",
+        count: {$sum: 1}
+      }}
+    ]).exec();
+  
+    console.log(productNameCounts);
+
+    const favProduct = productNameCounts.length ? favoriteFromArray(productNameCounts) : null;  // return _id of item with max count
+    console.log("Favorite product", favProduct);
+
+    return res.status(200).send({
+      favStore,
+      favProduct
+    });
+
+  } catch(e) {
+    console.error("getCoolStats error", e);
+    return res.status(500).send(e);
+  }
+
+}
+
 exports.recalculateUserStats = async function(req, res) {
   /*
    * #swagger.tags = ['User']
