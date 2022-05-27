@@ -26,4 +26,6 @@ router.post("/product/update", user.updateCurrentList);
 
 router.post("/product/save", user.saveCurrentList, list.create);
 
+router.post("/stats/recalculate", user.recalculateUserStats);
+
 module.exports = router;

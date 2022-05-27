@@ -6,7 +6,7 @@ const ListRecord = require('./ListRecord')
 const ProductListSchema = new Schema({
     list: {
         type: [ListRecord],
-        validate: [productListLength, '{PATH} should have exactly 2 values']
+        validate: [productListLength, '{PATH} should have at least 1 item']
     }, // not a schema, so no Object Id
     date: {
         type: Date,

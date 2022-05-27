@@ -221,3 +221,86 @@ exports.saveCurrentList = async function(req, res, next) {
   }
 
 }
+
+
+// TODO: restart count, fetch all lists of a user and rebuild user log
+exports.recalculateUserStats = async function(req, res) {
+  /*
+   * #swagger.tags = ['User']
+   * #swagger.description = 'Hacer el cómputo desde cero de UserLog'
+   */
+
+  const {UserKey} = req.body;
+  
+  let User;
+  try {
+    User = await User.findById(UserKey);
+  }
+  catch (e) {
+      console.error("Error searching for User", UserKey);
+      return res.status(500).send(e);
+  }
+
+  if (!User) {
+    return res.status(404).send("User not found", UserKey);
+  }
+
+  try {
+    let nLists, nMonths, nWeeks, monthlyAverage, weeklyAverage, listAverage;
+    nLists = await ProductList.countDocuments({UserKey});
+
+    console.log("User.UserLog.start", typeofUser.UserLog.start, User.UserLog.start)
+    nMonths = recalculateMonths(User.UserLog.start);
+    nWeeks = recalculateWeeks(User.UserLog.start);
+
+    // monthly Average: compute sum on a month by month basis.
+    monthlyAverage = await ProductList.aggregate([
+      {$match: {UserKey:UserKey}},
+      {
+        $group: {
+          _id: {$dateToString: {"date": "$date", "format": "%Y-%m"}},
+          average: {$avg: 'total'}
+        }
+      }
+    ])
+
+    listAverage = await ProductList.aggregate([
+      {$match: {UserKey:UserKey}},
+      {$group: {_id:null, average: {$avg: 'total'}}},
+    ]).exec();
+  
+    console.dir({
+      nLists,
+      nMonths,
+      nWeeks,
+      listAverage,
+      monthlyAverage,
+    })
+
+    /**
+const getDayAverage = async (model, date) => {
+  // Depending on how date stored
+  const _dateFormatted = new Date(date).toDateString();
+  const average = await model.aggregate([
+    { $match: { date: _dateFormatted } },
+    { $group: { _id: null, average: { $avg: 'ppm' } } },
+  ]).exec();
+  return average;
+};
+     */
+    
+  }
+  catch (e) {
+    console.error("Error recalculating UserLog", e);
+    return res.status(500).send(e);
+  }
+
+  res.status(200).send("Recalculated succesfully");
+
+}
+
+
+exports.clearUserStats = async function (req, res) {
+  // reassign start and reset all to 0.
+  return;
+}

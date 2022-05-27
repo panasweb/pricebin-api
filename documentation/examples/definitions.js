@@ -34,3 +34,25 @@ exports.RATE_REQUEST = {
     $fromCurrency:"MXN",
     amount:200
 }
+
+exports.CREATE_LIST = {
+    $list: [
+      {
+        "productName":"A",
+        "storeName":"store A",
+        "brandName":"X",
+        "amount":11,
+        "quantity":10
+      },
+      {
+        "productName":"B",
+        "storeName":"store A",
+        "brandName":"X",
+        "amount":2,
+        "quantity":170
+      }
+    ],
+    date: "2020-03-21",
+    $UserKey: "627e6a8c06b95c1fdbec8a0d",
+    $total: "450"
+  }

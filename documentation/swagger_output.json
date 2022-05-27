@@ -349,6 +349,114 @@
         }
       }
     },
+    "/users/product/update": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "list": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/product/save": {
+      "post": {
+        "tags": [
+          "ProductList"
+        ],
+        "description": "Crear una lista de producto a nombre de ObjectId de usuario y actualizar sus estadísticas",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "UserKey": {
+                  "example": "any"
+                },
+                "list": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "total": {
+                  "example": "any"
+                },
+                "skipUpdate": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/stats/recalculate": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Hacer el cómputo desde cero de UserLog",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "UserKey": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/stores/": {
       "post": {
         "tags": [
@@ -733,6 +841,39 @@
         }
       }
     },
+    "/products/query/name-and-brand": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "description": "Encontrar un producto por nombre y Marca",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productName": {
+                  "example": "any"
+                },
+                "brandName": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/products/add-price": {
       "post": {
         "tags": [
@@ -766,6 +907,45 @@
         }
       }
     },
+    "/products/delete-price": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "UserKey": {
+                  "example": "any"
+                },
+                "productId": {
+                  "example": "any"
+                },
+                "priceId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/products/delete/{id}": {
       "post": {
         "tags": [
@@ -778,11 +958,29 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "UserKey": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -847,19 +1045,13 @@
         }
       }
     },
-    "/votes/delete/{id}": {
+    "/votes/delete/": {
       "post": {
         "tags": [
           "Vote"
         ],
         "description": "Borrar un voto a favor de un precio",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "body",
             "in": "body",
@@ -886,7 +1078,7 @@
         }
       }
     },
-    "/votes/user/{userid}/{voteid}": {
+    "/votes/user/{userid}/{priceid}": {
       "get": {
         "tags": [
           "Vote"
@@ -900,7 +1092,7 @@
             "type": "string"
           },
           {
-            "name": "voteid",
+            "name": "priceid",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1091,6 +1283,56 @@
       "required": [
         "toCurrency",
         "fromCurrency"
+      ]
+    },
+    "CreateProductList": {
+      "type": "object",
+      "properties": {
+        "list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productName": {
+                "type": "string",
+                "example": "B"
+              },
+              "storeName": {
+                "type": "string",
+                "example": "store A"
+              },
+              "brandName": {
+                "type": "string",
+                "example": "X"
+              },
+              "amount": {
+                "type": "number",
+                "example": 2
+              },
+              "quantity": {
+                "type": "number",
+                "example": 170
+              }
+            }
+          }
+        },
+        "date": {
+          "type": "string",
+          "example": "2020-03-21"
+        },
+        "UserKey": {
+          "type": "string",
+          "example": "627e6a8c06b95c1fdbec8a0d"
+        },
+        "total": {
+          "type": "string",
+          "example": "450"
+        }
+      },
+      "required": [
+        "list",
+        "UserKey",
+        "total"
       ]
     }
   }

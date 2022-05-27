@@ -187,7 +187,8 @@ exports.getListsOfUser = function(req, res) {
 
 
 const updateUserLogStats = async (userInstance, listInstance, session, isDeletion) => {
-  // Use direct assignment and .save()
+  /* Adds or Deletes a List from UserLog and updates stats accordingly */
+  
   console.log("Updating user log of:", userInstance.email);
   const {UserLog} = userInstance;
 
@@ -242,4 +243,3 @@ const updateUserLogStats = async (userInstance, listInstance, session, isDeletio
 }
 
 
-// TODO: restart count, fetch all lists of a user and rebuild user log
