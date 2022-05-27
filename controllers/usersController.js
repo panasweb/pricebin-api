@@ -293,26 +293,29 @@ exports.recalculateUserStats = async function(req, res) {
     const globalTotalQuery = await ProductList.aggregate([
       {$match: {UserKey:_UserKey}},
       {$group: {_id: null, sum: {$sum: '$total'}}},
-    ])
+    ]);
     globalTotal = globalTotalQuery[0].sum;
 
-    weeklyTotal = globalTotal / nWeeks;  // from UserLog.start
+    weeklyAverage = globalTotal / nWeeks;  // from UserLog.start
   
     const newUserLog = {
-      ..._user.UserLog,
       nLists,
       nMonths,
       nWeeks,
       listAverage,
       monthlyAverage,
       globalTotal,
-      weeklyTotal
+      weeklyAverage,
+      start: _user.UserLog.start,
     }
 
-    console.log("Prev UserLog")
+    /* console.log("PREV UserLog")
     console.log(_user.UserLog)
-    console.log("New UserLog")
-    console.log(newUserLog);
+    console.log("NEW UserLog")
+    console.log(newUserLog);   */
+
+    _user.UserLog = newUserLog;
+    await _user.save();
   
   }
   catch (e) {

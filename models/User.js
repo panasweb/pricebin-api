@@ -52,11 +52,11 @@ const UserSchema = new Schema({
         monthlyAverage: {
             type: Number,
             default: 0,
-        },
+        }, // calculated over existing months
         weeklyAverage: {
             type: Number,
-            default: 0,  // evaluate removal, difficult to compute
-        },
+            default: 0,  
+        },  // total / nWeeks
         listAverage: {
             type: Number,
             default: 0,
@@ -64,11 +64,11 @@ const UserSchema = new Schema({
         nMonths: {
             type: Number,
             default: 1,
-        },
+        },  // total number of months since start
         nWeeks: {
             type: Number,
             default: 1,
-        },
+        },  // total number of weeks since start
         start: {
             type: Date,
             default: Date.now()
