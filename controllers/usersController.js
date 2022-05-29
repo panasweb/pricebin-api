@@ -255,7 +255,7 @@ exports.getCoolStats = async function (req, res) {
       }
     ]).exec();
 
-    console.log(storeNameCounts);
+    // console.log(storeNameCounts);
 
     const favStore = storeNameCounts.length ? favoriteFromArray(storeNameCounts) : null;  // return _id of item with max count
     console.log("Favorite store", favStore);
@@ -271,7 +271,7 @@ exports.getCoolStats = async function (req, res) {
       }
     ]).exec();
 
-    console.log(productNameCounts);
+    // console.log(productNameCounts);
 
     const favProduct = productNameCounts.length ? favoriteFromArray(productNameCounts) : null;  // return _id of item with max count
     console.log("Favorite product", favProduct);
@@ -314,7 +314,7 @@ exports.recalculateUserStats = async function (req, res) {
     let nLists, nMonths, nWeeks, monthlyAverage, listAverage, globalTotal;
     nLists = await ProductList.countDocuments({ UserKey });
 
-    console.log("User.UserLog.start", typeof _user.UserLog.start, _user.UserLog.start)
+    console.log("User.UserLog.start", _user.UserLog.start)
     nMonths = recalculateMonths(_user.UserLog.start);
     nWeeks = recalculateWeeks(_user.UserLog.start);
 
@@ -385,7 +385,36 @@ exports.recalculateUserStats = async function (req, res) {
 }
 
 
-exports.clearUserStats = async function (req, res) {
-  // reassign start and reset all to 0.
-  return;
+exports.resendMail = async function(req, res) {
+
+  const { UserKey } = req.body;
+  if (!UserKey) return res.status(400).send("Missing UserKey in payload");
+
+  // Recipient must exist in Pricebin
+  try {
+    const _user = await User.findById(UserKey);
+
+    if (_user.verified && _user.verified === true) {
+      return res.status(200).send("User is already verified");
+    }
+
+    // delete previous token
+    await _user.deleteOldToken();
+
+    // resend mail
+    await _user.sendVerificationLink(async (err) => {
+      if (err) {
+        return res.status(500).send("SendGrid error on resend:" + err)
+      }
+      return res.send({
+        message: "Email resent succesfully",
+      })
+    })
+  }
+  catch (e) {
+    console.error("Error on resendMail controller", e)
+    return res.status(500).send(e);
+  }
+
 }
+

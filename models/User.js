@@ -94,6 +94,12 @@ function validEmail(email) {
     return re.test(email);
 }
 
+UserSchema.methods.deleteOldToken = async function () {
+    console.log("Deleting prvious token of", this.id,"...");
+    const res = await Token.findOneAndDelete({_userId: this.id});  // throws err
+    console.log("deleted:", res);
+}
+
 UserSchema.methods.sendVerificationLink = function (callback) {
     sgMail.setApiKey(process.env.SG_API_KEY);
 

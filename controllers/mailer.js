@@ -43,9 +43,6 @@ exports.get2FAMail = function(email, displayName, tokenString) {
   const text = MAIL_BODY_TEXT(displayName, verifyLink);
   const html = MAIL_BODY_HTML(displayName, verifyLink)
 
-  console.log(verifyLink);
-  console.log(text);
-  console.log(html);
 
   const msg = {
     to: email, // recipient
@@ -60,7 +57,7 @@ exports.get2FAMail = function(email, displayName, tokenString) {
 
 
 // Route for API testing
-module.exports.testMail = function(req, res) {
+exports.testMail = function(req, res) {
     const msg = {
       to: 'ericjardon@hotmail.com', // Change to your recipient
       from: 'geebproject@gmail.com', // Change to your verified sender
