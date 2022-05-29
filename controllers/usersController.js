@@ -7,6 +7,7 @@ const {
   recalculateMonths,
   recalculateWeeks,
 } = require('../utils/funcs');
+const db = require('../db/db');
 
 exports.getAll = function (req, res) {
   /*
@@ -63,22 +64,24 @@ exports.create = async function (req, res) {
   const { username, email } = req.body;
 
   const avatar = await getPokemonAvatar();
-  console.log(avatar);
+  console.log("New avi", avatar);
 
   const user = new User({
     username,
     email,
     avatar: avatar || undefined
   })
-
+  
   user.save()
     .then(
       (newUser) => {
-        newUser.sendVerificationLink((err) => {
+        newUser.sendVerificationLink(async (err) => {
           if (err) {
+            console.log("Error sending email. Deleting user");
+            await User.findByIdAndDelete(newUser._id);
+            console.log("User deleted");
             return res.status(500).send("SendGrid error:" + err)
           }
-          
           return res.send({
             message: "Created user succesfully",
             newDoc: newUser,
@@ -86,7 +89,7 @@ exports.create = async function (req, res) {
         })
       })
     .catch(
-      (err) => {
+      async (err) => {
         console.error("error creating user", err);
         return res.status(500).send("Server Error:" + err)
       }

@@ -36,10 +36,8 @@ Atentamente,
 
 
 // Return the verification message structure for SendGrid API
-exports.get2FAMail = function(user, tokenString) {
-
-  let email = user.email;
-  let displayName = user.displayName || "usuarix";
+exports.get2FAMail = function(email, displayName, tokenString) {
+  displayName = displayName || "usuarix";
   
   const verifyLink = VERIFY_LINK_TEMPLATE(tokenString);
   const text = MAIL_BODY_TEXT(displayName, verifyLink);

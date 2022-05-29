@@ -1,6 +1,8 @@
+const crypto = require('crypto');
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const ListRecord = require('./ListRecord')
+const Token = require('./Token')
 const sgMail = require('@sendgrid/mail');
 const { get2FAMail } = require("../controllers/mailer");
 
@@ -19,6 +21,10 @@ const CurrentList = {
 }
 
 const UserSchema = new Schema({
+    verified: {
+        type: Boolean,
+        default: undefined,
+    },
     username: {
         type: String,
         minlength: 1,
@@ -79,7 +85,7 @@ const UserSchema = new Schema({
         globalTotal: {
             type: Number,
             default: 0
-        }  // esto se puede calcular anytime, en el back
+        },  // esto se puede calcular anytime, en el back
     },
 })
 
@@ -94,22 +100,30 @@ UserSchema.methods.sendVerificationLink = function (callback) {
     console.log("Create token for id:", this.id);
     const token = new Token({ _userId: this.id, token: crypto.randomBytes(16).toString('hex') })
     console.log("New token", token);
-
-    token.save(function (err) {
-        if (err) { return console.log(err.message) }
-
-        const message = get2FAMail(this, token.token);
-        
-        sgMail.send(message, function (err) {
-            if (err) {
-                callback(err);
-            }
-            else {
-                console.log("Sendgrid mail success");
-                callback();
-            }
+    let user = this._doc;
+    console.log("User", user);
+    try {
+        token.save(function (err) {
+            if (err) { return console.log(err.message) }
+            const message = get2FAMail(user.email, user.displayName, token.token);
+            console.log("mail:", message);
+            
+            sgMail.send(message, function (err) {
+                if (err) {
+                    callback(err);
+                }
+                else {
+                    console.log("Sendgrid mail success");
+                    callback();
+                }
+            })
         })
-    })
+    }
+    catch (e) {
+        console.log("Error on token creation", e);
+        callback(e);
+    }
+
 }
 
 module.exports = mongoose.model("User", UserSchema);

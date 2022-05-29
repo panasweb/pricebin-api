@@ -53,7 +53,6 @@ exports.getPokemonAvatar = async function() {
     // Get Request
     try {
         const {data} = await axios.get(URL + id);
-        console.log(data);
         return data.sprites.versions['generation-ii'].crystal["front_default"];
 
     } catch (e) {
