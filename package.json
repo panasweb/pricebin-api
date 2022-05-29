@@ -10,6 +10,7 @@
     "mochatest": "./node_modules/mocha/bin/mocha.js"
   },
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "async": "^3.2.3",
     "axios": "^0.26.1",
     "bcrypt": "^5.0.1",

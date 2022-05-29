@@ -1,4 +1,4 @@
-1. ?
-1*. Rebuild User Stats endpoint
-2. Rebuild Swagger
-x. SendGrid
+Sendgrid:
+1. Review token generation
+2. Add verified field to users. Default undefined
+3. Only verified users will have valid activity
