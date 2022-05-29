@@ -98,13 +98,14 @@ UserSchema.methods.deleteOldToken = async function () {
     console.log("Deleting prvious token of", this.id,"...");
     const res = await Token.findOneAndDelete({_userId: this.id});  // throws err
     console.log("deleted:", res);
+    return res;
 }
 
-UserSchema.methods.sendVerificationLink = function (callback) {
+UserSchema.methods.sendVerificationLink = function (count, callback) {
     sgMail.setApiKey(process.env.SG_API_KEY);
 
     console.log("Create token for id:", this.id);
-    const token = new Token({ _userId: this.id, token: crypto.randomBytes(16).toString('hex') })
+    const token = new Token({ count: count, _userId: this.id, token: crypto.randomBytes(16).toString('hex') })
     console.log("New token", token);
     let user = this._doc;
     console.log("User", user);

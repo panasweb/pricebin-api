@@ -34,6 +34,7 @@ Atentamente,
 <bold>Pricebin</bold> 🍜
 `);
 
+exports.RESEND_LIMIT = 3;
 
 // Return the verification message structure for SendGrid API
 exports.get2FAMail = function(email, displayName, tokenString) {

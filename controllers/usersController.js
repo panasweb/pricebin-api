@@ -7,7 +7,7 @@ const {
   recalculateMonths,
   recalculateWeeks,
 } = require('../utils/funcs');
-const db = require('../db/db');
+const {RESEND_LIMIT} = require('./mailer');
 
 exports.getAll = function (req, res) {
   /*
@@ -71,7 +71,7 @@ exports.create = async function (req, res) {
     email,
     avatar: avatar || undefined
   })
-  
+
   user.save()
     .then(
       (newUser) => {
@@ -384,9 +384,13 @@ exports.recalculateUserStats = async function (req, res) {
 
 }
 
-
-exports.resendMail = async function(req, res) {
-
+// FUTURE: Keep track of resent mail count on token field.
+// after 3 resents, block.
+exports.resendMail = async function (req, res) {
+  /*
+     * #swagger.tags = ['User']
+     * #swagger.description = 'Reenviar el correo de verificación de cuenta'
+     */
   const { UserKey } = req.body;
   if (!UserKey) return res.status(400).send("Missing UserKey in payload");
 
@@ -399,10 +403,20 @@ exports.resendMail = async function(req, res) {
     }
 
     // delete previous token
-    await _user.deleteOldToken();
+    let count = 0;
+    const prevToken = await _user.deleteOldToken();
+    if (prevToken) {
+      count = prevToken.count || 0;
+    }
+
+    // Guard against excess SendGrid calls
+    if (count + 1 > RESEND_LIMIT) {
+      console.log("excess resend limit", RESEND_LIMIT);
+      return res.status(400).send({message:"Pricebin API Limit: too many resend requests for user"});
+    }
 
     // resend mail
-    await _user.sendVerificationLink(async (err) => {
+    await _user.sendVerificationLink(count+1, async (err) => {
       if (err) {
         return res.status(500).send("SendGrid error on resend:" + err)
       }
@@ -412,7 +426,7 @@ exports.resendMail = async function(req, res) {
     })
   }
   catch (e) {
-    console.error("Error on resendMail controller", e)
+    console.error("Pricebin API error on resendMail controller", e)
     return res.status(500).send(e);
   }
 
