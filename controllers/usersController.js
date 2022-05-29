@@ -187,29 +187,25 @@ exports.saveCurrentList = async function(req, res, next) {
    * #swagger.description = 'Guardar la Lista Actual al historial del usuario'
    */
 
-  const {UserKey} = req.body;
+  const {email, total, list} = req.body;
 
   // 1. get user
   // 2. get currentlist of user. if no list, return
-  // 3. send req data to next() : list, date, UserKey
+  // 3. send req data to next() : list, date, email
 
   try {
-    const user = await User.findById(UserKey, null, {session});
+    console.log(total)
+    const user = await User.findOneAndUpdate({email}, {  $push: {  'pastList':   {'total': total, 'list': list}}  })
+    .then((res,req)=>
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+      console.log("Succesufull")
+     )
+    .catch((e)=> console.log("API Error: ", e))
 
-    // Get Current List
-    const list = user.currentList?.list;
-    if (!list || list.length == 0) {
-      throw new Error("There is no current list")
-    }
 
     const date = Date.now();
 
-    req.list = list;
-    req.date = date;
+
     next()
   }
   catch (error) {

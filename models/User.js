@@ -14,6 +14,22 @@ const CurrentList = {
     },
 
 }
+const PastList = {
+
+    list: {
+        type: [ListRecord],
+        default: []
+    } , 
+    total: {
+        type: Number,
+        default: 0
+    },
+    saveDate: {
+        type: Date,
+        default: Date.now()
+    }
+
+}
 
 const UserSchema = new Schema({
     username: {
@@ -40,6 +56,8 @@ const UserSchema = new Schema({
         default: 0,
     },
     currentList: CurrentList,
+    pastList: [PastList],
+
     UserLog: {
         nLists: {
             type:Number,
