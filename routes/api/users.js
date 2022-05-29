@@ -30,4 +30,6 @@ router.post("/stats/recalculate", user.recalculateUserStats);
 
 router.post("/stats/cool", user.getCoolStats);  // fav product, fav store
 
+router.post('/mail/resend', user.resendMail);  // UserKey
+
 module.exports = router;
