@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 
 const ListRecord = {
     productName: {
@@ -22,4 +23,4 @@ const ListRecord = {
     },
 }
 
-module.exports = ListRecord;
+module.exports =  mongoose.Schema(ListRecord, { _id : false });

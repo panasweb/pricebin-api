@@ -3,11 +3,11 @@ const router = express.Router();
 const vote = require("../../controllers/votesController");
 
 /* `/votes/` PREFIX */
-router.post("/", vote.create);
+router.post("/", vote.create);  // vote for a price
 
-router.post("/delete/:id", vote.delete);
+router.post("/delete/", vote.delete);
 
-router.get("/user/:userid/:voteid", vote.findUserVote);
+router.get("/user/:userid/:priceid", vote.findUserVote);
 
 router.post("/price/counts", vote.getVoteCounts);
 
