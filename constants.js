@@ -5,3 +5,5 @@ exports.TYPES = [
     'Farmacia',
     null,
 ]
+
+exports.ADMIN_RANK = 10;

@@ -4,6 +4,7 @@ const {
     CREATE_USER,
     PRODUCT_PRICE_UPDATE,
     RATE_REQUEST,
+    CREATE_LIST
 } = require('./examples/definitions')
 // const { dirname } = require('path');
 // const appDir = dirname(require.main.filename);
@@ -67,6 +68,7 @@ const doc = {
         CreateUser: CREATE_USER,
         UpdatePrice: PRODUCT_PRICE_UPDATE,
         GetConversionRate: RATE_REQUEST,
+        CreateProductList: CREATE_LIST
     }
 }
 
