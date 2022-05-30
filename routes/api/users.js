@@ -25,8 +25,6 @@ router.post("/product/clear", user.clearCurrentList);
 
 router.post("/product/update", user.updateCurrentList);
 
-router.post("/product/save", user.saveCurrentList, list.create);
-
 router.post("/stats/recalculate", user.recalculateUserStats);
 
 router.post("/stats/cool", user.getCoolStats);  // fav product, fav store
