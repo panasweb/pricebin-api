@@ -199,44 +199,6 @@ exports.updateCurrentList = function (req, res) {
 }
 
 
-exports.saveCurrentList = async function (req, res, next) {
-  /*
-   * #swagger.tags = ['CurrentList']
-   * #swagger.description = 'Guardar la Lista Actual al historial del usuario'
-   */
-
-  const { UserKey } = req.body;
-
-  // 1. get user
-  // 2. get currentlist of user. if no list, return
-  // 3. send req data to next() : list, date, UserKey
-
-  try {
-    const user = await User.findById(UserKey, null, { session });
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    // Get Current List
-    const list = user.currentList?.list;
-    if (!list || list.length == 0) {
-      throw new Error("There is no current list")
-    }
-
-    const date = Date.now();
-
-    req.list = list;
-    req.date = date;
-    next()
-  }
-  catch (error) {
-
-    res.status(500).send("Error getting current list: " + error);
-  }
-
-}
-
 exports.getCoolStats = async function (req, res) {
   const { UserKey } = req.body;
   // Get favorite store:

@@ -53,6 +53,7 @@ const UserSchema = new Schema({
         default: 0,
     },
     currentList: CurrentList,
+
     UserLog: {
         nLists: {
             type: Number,
