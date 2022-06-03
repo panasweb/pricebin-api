@@ -306,14 +306,17 @@ exports.recalculateUserStats = async function (req, res) {
       { $match: { UserKey: _UserKey } },
       { $group: { _id: null, average: { $avg: '$total' } } },
     ]).exec();
+    console.log("Length listAvgQuery", listAvgQuery);
 
-    listAverage = listAvgQuery[0].average;
+    listAverage = listAvgQuery.length > 0 ?  listAvgQuery[0].average : 0;
+    // technically, average of 0 elements is undefined, but for usability
 
     const globalTotalQuery = await ProductList.aggregate([
       { $match: { UserKey: _UserKey } },
       { $group: { _id: null, sum: { $sum: '$total' } } },
     ]);
-    globalTotal = globalTotalQuery[0].sum;
+    
+    globalTotal = globalTotalQuery.length ? globalTotalQuery[0].sum : 0;
 
     weeklyAverage = globalTotal / nWeeks;  // from UserLog.start
 
@@ -328,10 +331,10 @@ exports.recalculateUserStats = async function (req, res) {
       start: _user.UserLog.start,
     }
 
-    /* console.log("PREV UserLog")
+    console.log("PREV UserLog")
     console.log(_user.UserLog)
     console.log("NEW UserLog")
-    console.log(newUserLog);   */
+    console.log(newUserLog);  
 
     _user.UserLog = newUserLog;
     await _user.save();
