@@ -1,6 +1,9 @@
 
+const { TYPES } = require('../constants'); 
 const Product = require('../models/Product');
 const { resetVotes } = require('./votesController')
+const TYPES_SET = new Set(TYPES);
+
 
 exports.getAll = function (req, res) {
   /*
@@ -60,8 +63,8 @@ exports.create = function (req, res) {
       img
     });
   } catch (e) {
-    console.error(e);
-    throw e;
+    console.error("Validation error", e);
+    res.status(400).send("Validation Error:" + e);
   }
 
   product.save()
@@ -72,8 +75,8 @@ exports.create = function (req, res) {
       }))
     .catch(
       (err) => {
-        console.error(err);
-        res.status(500).send("Server Error:" + err);
+        console.error("Server error " + err);
+        res.status(500).send("Mongoose / MongoDB Error:" + err);
       }
     )
 }
@@ -168,11 +171,21 @@ exports.removePrice = function(req, res) {
 exports.findProductsByName = function (req, res) {
   /*
    * #swagger.tags = ['Product']
-   * #swagger.description = 'Buscar productos por nombre (regex)'
+   * #swagger.description = 'Buscar productos por nombre (regex) y categoría opcional'
    */
-  const { name } = req.body;
+  const { name, type } = req.body;
 
-  Product.find({ name: { $regex: name, $options: 'i' } })
+  let query;
+  if (type) {
+    /*  && TYPES_SET.has(type) */
+    query = { name: { $regex: name, $options: 'i' }, type:type }
+  } else {
+    query = { name: { $regex: name, $options: 'i' } }
+  }
+
+  console.log("Query:", query);
+
+  Product.find(query)
     .then(products => {
       res.status(200).send(products);
     })
