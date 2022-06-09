@@ -171,7 +171,7 @@ exports.removePrice = function(req, res) {
 exports.findProductsByName = function (req, res) {
   /*
    * #swagger.tags = ['Product']
-   * #swagger.description = 'Buscar productos por nombre (regex) y categoría opcional'
+   * #swagger.description = 'Buscar productos por nombre (regex) y `type` opcional'
    */
   const { name, type } = req.body;
 

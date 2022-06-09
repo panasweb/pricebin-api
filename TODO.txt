@@ -1,3 +1,9 @@
+TODO -------
+- Add firebase delete user by email.
+
+
+
+DONE -------
 Sendgrid:
 1. Review token generation
 2. Add verified field to users. Default undefined

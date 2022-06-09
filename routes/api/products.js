@@ -8,7 +8,7 @@ router.post("/", product.create);
 
 router.post("/update-price", product.updatePrice);
 
-router.post("/by-name", product.findProductsByName);
+router.post("/by-name", product.findProductsByName); // may have 'type' filter
 
 router.post("/query/name-and-brand", product.findProductsByNameAndBrand);
 
