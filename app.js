@@ -16,9 +16,9 @@ const storesRouter = require('./routes/api/stores');
 const listsRouter = require('./routes/api/lists');
 const productsRouter = require('./routes/api/products');
 const votesRouter = require('./routes/api/votes');
+const admin = require('./firebase/admin')
 
 const app = express();
-const db = require('./db/db');
 
 app.use(cors());
 app.use(logger('dev'));
