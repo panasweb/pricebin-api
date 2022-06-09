@@ -420,51 +420,6 @@
         }
       }
     },
-    "/users/product/save": {
-      "post": {
-        "tags": [
-          "ProductList"
-        ],
-        "description": "Crear una lista de producto a nombre de ObjectId de usuario y actualizar sus estadísticas",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "UserKey": {
-                  "example": "any"
-                },
-                "list": {
-                  "example": "any"
-                },
-                "date": {
-                  "example": "any"
-                },
-                "total": {
-                  "example": "any"
-                },
-                "skipUpdate": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/users/stats/recalculate": {
       "post": {
         "tags": [
@@ -855,6 +810,9 @@
           "200": {
             "description": "OK"
           },
+          "400": {
+            "description": "Bad Request"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -917,7 +875,7 @@
         "tags": [
           "Product"
         ],
-        "description": "Buscar productos por nombre (regex)",
+        "description": "Buscar productos por nombre (regex) y `type` opcional",
         "parameters": [
           {
             "name": "body",
@@ -926,6 +884,9 @@
               "type": "object",
               "properties": {
                 "name": {
+                  "example": "any"
+                },
+                "type": {
                   "example": "any"
                 }
               }

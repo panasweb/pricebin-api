@@ -47,12 +47,16 @@ const ProductSchema = new Schema({
     },
     prices: {
         type: [PriceSchema],
-        default: [],
+        validate: [priceListLength, '{PATH} should have at least 1 item']
     },
     img: {
         type: String
     }
 })
+
+function priceListLength(val) {
+    return val.length > 0;
+}
 
 
 module.exports = mongoose.model("Product", ProductSchema);
