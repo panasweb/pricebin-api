@@ -7,7 +7,8 @@ const {
   recalculateMonths,
   recalculateWeeks,
 } = require('../utils/funcs');
-const {RESEND_LIMIT} = require('./mailer');
+const { RESEND_LIMIT } = require('./mailer');
+const { auth } = require('../firebase/admin');
 
 exports.getAll = function (req, res) {
   /*
@@ -109,8 +110,38 @@ exports.delete = function (req, res) {
         await ProductList.deleteMany({ UserKey: req.params.id });
         if (deletedUser) {
           await Vote.deleteMany({ UserKey: deletedUser.email });
+          // delete from Firebase Auth
+          auth
+            .getUserByEmail(deletedUser.email)
+            .then( (userRecord) => {
+              // See the UserRecord reference doc for the contents of userRecord.
+              console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
+              if (userRecord) {
+                auth
+                .deleteUser(userRecord.uid)
+                .then(() => {
+                  console.log('Successfully deleted user');
+
+                })
+                .catch((error) => {
+                  console.log('Error deleting user:', error);
+
+                });
+              }
+              
+              // Does not wait for Firebase API
+              res.status(200).send("Deleted user associated data.");
+
+            })
+            .catch((error) => {
+              console.log('Error fetching user data:', error);
+              res.status(500).send("Firebase Error:", e);
+            });
         }
-        res.status(200).send("Deleted user associated data.");
+        else {
+          res.status(200).send("No User To Delete")
+        }
+       
       }
       catch (e) {
         console.error(e);
@@ -308,14 +339,14 @@ exports.recalculateUserStats = async function (req, res) {
     ]).exec();
     console.log("Length listAvgQuery", listAvgQuery);
 
-    listAverage = listAvgQuery.length > 0 ?  listAvgQuery[0].average : 0;
+    listAverage = listAvgQuery.length > 0 ? listAvgQuery[0].average : 0;
     // technically, average of 0 elements is undefined, but for usability
 
     const globalTotalQuery = await ProductList.aggregate([
       { $match: { UserKey: _UserKey } },
       { $group: { _id: null, sum: { $sum: '$total' } } },
     ]);
-    
+
     globalTotal = globalTotalQuery.length ? globalTotalQuery[0].sum : 0;
 
     weeklyAverage = globalTotal / nWeeks;  // from UserLog.start
@@ -334,7 +365,7 @@ exports.recalculateUserStats = async function (req, res) {
     console.log("PREV UserLog")
     console.log(_user.UserLog)
     console.log("NEW UserLog")
-    console.log(newUserLog);  
+    console.log(newUserLog);
 
     _user.UserLog = newUserLog;
     await _user.save();
@@ -377,11 +408,11 @@ exports.resendMail = async function (req, res) {
     // Guard against excess SendGrid calls
     if (count + 1 > RESEND_LIMIT) {
       console.log("excess resend limit", RESEND_LIMIT);
-      return res.status(400).send({message:"Pricebin API Limit: too many resend requests for user"});
+      return res.status(400).send({ message: "Pricebin API Limit: too many resend requests for user" });
     }
 
     // resend mail
-    await _user.sendVerificationLink(count+1, async (err) => {
+    await _user.sendVerificationLink(count + 1, async (err) => {
       if (err) {
         return res.status(500).send("SendGrid error on resend:" + err)
       }

@@ -1,5 +1,6 @@
 require('dotenv').config()
 const admin = require("firebase-admin");
+const {getAuth} = require("firebase-admin/auth");
 
 const serviceAccountKey = process.env.serviceAccountKey;
 const serviceAccountPath =`./${serviceAccountKey}.json`
@@ -11,4 +12,5 @@ admin.initializeApp({
 });
 
 // console.log("Admin", admin);
-module.exports = admin;
+exports.admin = admin;
+exports.auth = getAuth();
