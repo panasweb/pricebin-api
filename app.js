@@ -18,7 +18,6 @@ const productsRouter = require('./routes/api/products');
 const votesRouter = require('./routes/api/votes');
 
 const app = express();
-const db = require('./db/db');
 
 app.use(cors());
 app.use(logger('dev'));

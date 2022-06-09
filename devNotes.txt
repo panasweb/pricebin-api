@@ -14,3 +14,7 @@ Two dependencies:
 
 Example with express router
 https://github.com/davibaltar/example-swagger-autogen-with-router/blob/main/swagger.js
+
+
+FIREBASE ADMIN SDK BASICS
+https://medium.com/enappd/firebase-admin-sdk-setup-and-functions-using-node-js-39e71fd6d254
